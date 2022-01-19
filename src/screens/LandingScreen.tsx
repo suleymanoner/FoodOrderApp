@@ -17,7 +17,7 @@ interface LandingProps {
 
 const _LandingScreen: React.FC<LandingProps> = (props) => {
 
-    const { userReducer, onUpdateLocation } = props
+    const { userReducer,  onUpdateLocation } = props
 
     const { navigate } = useNavigation()
 
@@ -39,7 +39,7 @@ const _LandingScreen: React.FC<LandingProps> = (props) => {
 
         opencage.geocode({key, q: `${lat},${long}`}).then(response => {
             setAddress(response.results[0].formatted)
-            onUpdateLocation(address)
+            onUpdateLocation(response.results[0].formatted)
         })
 
         setTimeout(() => {
@@ -69,7 +69,13 @@ const _LandingScreen: React.FC<LandingProps> = (props) => {
     )
 }
 
+const mapToStateProps = (state: ApplicationState) => ({
+    userReducer: state.userReducer
+})
 
+const LandingScreen = connect(mapToStateProps, {onUpdateLocation})(_LandingScreen)
+
+export { LandingScreen }
 
 
 const styles = StyleSheet.create({
@@ -114,12 +120,3 @@ const styles = StyleSheet.create({
         textAlign: "center"
     }
 })
-
-
-const mapToStateProps = (state: ApplicationState) => ({
-    userReducer: state.userReducer
-})
-
-const LandingScreen = connect(mapToStateProps, {onUpdateLocation})(_LandingScreen)
-
-export { LandingScreen }
