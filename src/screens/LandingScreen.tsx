@@ -39,7 +39,11 @@ const _LandingScreen: React.FC<LandingProps> = (props) => {
 
         opencage.geocode({key, q: `${lat},${long}`}).then(response => {
             setAddress(response.results[0].formatted)
-            onUpdateLocation(response.results[0].formatted)
+            onUpdateLocation(response.results[0].formatted, response.results[0].components.postcode)
+            // for full address, .formatted
+            console.log(response.results[0].components.postcode)
+            console.log(response.results[0])
+            
         })
 
         setTimeout(() => {

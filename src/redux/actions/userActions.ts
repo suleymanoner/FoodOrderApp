@@ -5,7 +5,8 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 export interface UpdateLocationAction {
     readonly type: "ON_UPDATE_LOCATION",
-    payload: string
+    payload: string,
+    postCode: string
 }
 
 export interface UserErrorAction {
@@ -17,7 +18,7 @@ export interface UserErrorAction {
 export type UserAction = UpdateLocationAction | UserErrorAction
 
 
-export const onUpdateLocation = (location: string) => {
+export const onUpdateLocation = (location: string, postCode: string) => {
 
 
     return async (dispatch: Dispatch<UserAction>) => {
@@ -25,11 +26,14 @@ export const onUpdateLocation = (location: string) => {
 
         try {
 
+            
             await AsyncStorage.setItem('user_location', location)
+            await AsyncStorage.setItem('user_location_postcode', postCode)
 
             dispatch({
                 type: "ON_UPDATE_LOCATION",
-                payload: location
+                payload: location,
+                postCode: postCode
             })
             
         } catch (error) {

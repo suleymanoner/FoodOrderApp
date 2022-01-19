@@ -5,6 +5,7 @@ import { UserModel, UserState } from "../models"
 const initialState: UserState = {
     user: {} as UserModel,
     location: "" as string,
+    postCode: "" as string,
     error: undefined
 }
 
@@ -16,7 +17,8 @@ const UserReducer = (state: UserState = initialState, action: UserAction) => {
         case "ON_UPDATE_LOCATION":
             return {
                 ...state,
-                location: action.payload
+                location: action.payload,
+                postCode: action.postCode
             }
     
         default:

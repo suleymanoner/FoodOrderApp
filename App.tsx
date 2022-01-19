@@ -25,7 +25,12 @@ const switchNavigator = createSwitchNavigator({
     Home: {
       screen: createStackNavigator({
         HomePage: HomeScreen
-      }),
+      }, {
+        defaultNavigationOptions: {
+          headerShown: false
+      }
+    }),
+      
       navigationOptions: {
         tabBarIcon: ({focused, tintColor}) => {
           let icon = focused == true ? require('./src/images/home_icon.png') : require('./src/images/home_n_icon.png')

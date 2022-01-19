@@ -17,7 +17,7 @@ export interface ShoppingErrorAction {
 export type ShoppingAction = AvailabilityAction | ShoppingErrorAction
 
 
-export const onAvailability = () => {
+export const onAvailability = (postCode: string) => {
 
 
     return async (dispatch: Dispatch<ShoppingAction>) => {
@@ -25,7 +25,7 @@ export const onAvailability = () => {
 
         try {
 
-            const response = await axios.get<FoodAvailability>(`${BASE_URL}food/availability/78787878`)
+            const response = await axios.get<FoodAvailability>(`${BASE_URL}food/availability/${postCode}`)
 
             if(!response) {
                 dispatch({
