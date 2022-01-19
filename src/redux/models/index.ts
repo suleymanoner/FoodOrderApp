@@ -41,3 +41,7 @@ export interface UserState {
     location: string,
     error: string | undefined
 }
+
+export interface ShoppingState {
+    availability: FoodAvailability
+}

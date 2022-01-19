@@ -2,12 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import opencage from 'opencage-api-client';
-
+import { connect } from 'react-redux';
+import { onUpdateLocation, UserState, ApplicationState } from '../redux'
 import { useNavigation } from '../utils'
 
 const screenWidth = Dimensions.get('screen').width
 
-const LandingScreen = () => {
+
+interface LandingProps {
+    userReducer: UserState,
+    onUpdateLocation: Function
+}
+
+
+const _LandingScreen: React.FC<LandingProps> = (props) => {
+
+    const { userReducer, onUpdateLocation } = props
 
     const { navigate } = useNavigation()
 
@@ -29,6 +39,7 @@ const LandingScreen = () => {
 
         opencage.geocode({key, q: `${lat},${long}`}).then(response => {
             setAddress(response.results[0].formatted)
+            onUpdateLocation(address)
         })
 
         setTimeout(() => {
@@ -58,7 +69,7 @@ const LandingScreen = () => {
     )
 }
 
-export default LandingScreen;
+
 
 
 const styles = StyleSheet.create({
@@ -103,3 +114,12 @@ const styles = StyleSheet.create({
         textAlign: "center"
     }
 })
+
+
+const mapToStateProps = (state: ApplicationState) => ({
+    userReducer: state.userReducer
+})
+
+const LandingScreen = connect(mapToStateProps, {onUpdateLocation})(_LandingScreen)
+
+export { LandingScreen }

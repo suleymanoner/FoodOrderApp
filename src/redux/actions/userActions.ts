@@ -2,7 +2,6 @@ import axios from "axios";
 import { Dispatch } from "react";
 import { BASE_URL } from "../../utils";
 
-
 export interface UpdateLocationAction {
     readonly type: "ON_UPDATE_LOCATION",
     payload: string
@@ -24,6 +23,8 @@ export const onUpdateLocation = (location: string) => {
 
 
         try {
+
+
 
             dispatch({
                 type: "ON_UPDATE_LOCATION",

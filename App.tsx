@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, StyleSheet, Text } from 'react-native';
-import LandingScreen from './src/screens/LandingScreen';
+import { LandingScreen } from './src/screens/LandingScreen';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
@@ -77,7 +77,10 @@ const AppNavigation = createAppContainer(switchNavigator)
 
 const App = () => {
   return(
-    <AppNavigation />
+    <Provider store={store} >
+      <AppNavigation />
+    </Provider>
+    
   )
 }
 
