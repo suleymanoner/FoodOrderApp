@@ -3,9 +3,13 @@ import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from 'rea
 import Geolocation from '@react-native-community/geolocation';
 import opencage from 'opencage-api-client';
 
+import { useNavigation } from '../utils'
+
 const screenWidth = Dimensions.get('screen').width
 
 const LandingScreen = () => {
+
+    const { navigate } = useNavigation()
 
     const [lat, setLat] = useState<number>()
     const [long, setLong] = useState<number>()
@@ -25,8 +29,11 @@ const LandingScreen = () => {
 
         opencage.geocode({key, q: `${lat},${long}`}).then(response => {
             setAddress(response.results[0].formatted)
-            console.log(response)
         })
+
+        setTimeout(() => {
+            navigate('homeStack')
+        }, 2000)
     }
     
 
