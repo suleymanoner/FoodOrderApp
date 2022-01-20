@@ -7,6 +7,7 @@ import { createBottomTabNavigator } from 'react-navigation-tabs'
 import { HomeScreen } from './src/screens/HomeScreen';
 import { Provider } from 'react-redux';
 import { store } from './src/redux'
+import { SearchScreen } from './src/screens/SearchScreen';
 
 
 const switchNavigator = createSwitchNavigator({
@@ -24,7 +25,8 @@ const switchNavigator = createSwitchNavigator({
 
     Home: {
       screen: createStackNavigator({
-        HomePage: HomeScreen
+        HomePage: HomeScreen,
+        SearchPage: SearchScreen
       }, {
         defaultNavigationOptions: {
           headerShown: false

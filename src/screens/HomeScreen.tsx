@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, Image } from 'react-native';
 import { connect } from 'react-redux';
-import { SearchBar } from '../components';
+import { ButtonWithIcon, SearchBar } from '../components';
 import { onAvailability, UserState, ApplicationState, ShoppingState } from '../redux'
 import { useNavigation } from '../utils'
 
@@ -37,15 +37,15 @@ const _HomeScreen: React.FC<HomeProps> = (props) => {
                     didTouch={() => {
                         navigate('SearchPage')
                     }}
-                    onTextChange={() => {}} />
+                    onTextChange={() => {}}
+                    onEndEditing={() => {}} />
+                    <ButtonWithIcon onTap={() => {}} icon={require('../images/hambar.png')} width={50} height={40} />
                 </View>
             </View>
+
             <View style={styles.body} >
-                
-
-
+             
             </View>
-            
         </View>
     )
 
@@ -63,11 +63,10 @@ export { HomeScreen }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "red"
+        backgroundColor: "rgba(242,242,242,1)"
     },
     navigation: {
         flex: 2,
-        backgroundColor: "yellow"
     },
     navigation_inner_container: {
         marginTop: 25,
@@ -80,17 +79,16 @@ const styles = StyleSheet.create({
         flexDirection: "row"
     },
     search_bar_container: {
-        flex: 8,
-        backgroundColor: "green"
+        display: "flex",
+        height: 60,
+        justifyContent: "space-around",
+        flexDirection: "row",
+        alignItems: "center",
+        marginLeft: 4
     },
     body: {
         flex: 9,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "orange"
     },
-    footer: {
-        flex: 1,
-        backgroundColor: "cyan"
-    }
 })

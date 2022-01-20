@@ -15,7 +15,7 @@ const SearchBar: React.FC<SearchBarProps> = (props) => {
     return(
         <View style={styles.container} >
             <View style={styles.searchBar} >
-                <Image style={{width: 25, height: 25}} source={require('../images/search.png')} />
+                <Image style={{width: 20, height: 20}} source={require('../images/search.png')} />
                 <TextInput 
                     style={styles.textInput}
                     placeholder={'Search Foods'}
@@ -32,7 +32,6 @@ const SearchBar: React.FC<SearchBarProps> = (props) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "yellow",
         height: 60,
         display: "flex",
         flexDirection: "row",
@@ -44,9 +43,8 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         flex: 1,
-        backgroundColor: "green",
         display: "flex",
-        height: 32,
+        height: 35,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
