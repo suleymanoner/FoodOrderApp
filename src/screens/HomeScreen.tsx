@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, Image, Alert } from 'react-native';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
-import { ButtonWithIcon, CategoryCard, SearchBar } from '../components';
+import { ButtonWithIcon, CategoryCard, RestaurantCard, SearchBar } from '../components';
 import { onAvailability, UserState, ApplicationState, ShoppingState } from '../redux'
 import { useNavigation } from '../utils'
 
@@ -52,7 +52,31 @@ const _HomeScreen: React.FC<HomeProps> = (props) => {
                     data={categories} 
                     renderItem={({item}) => <CategoryCard item={item} onTap={() => {Alert.alert('Category Tapped')}} />} 
                     keyExtractor={(item) => `${item.id}`} />
+
+                    <View>
+                        <Text style={styles.restaurantsTitle} >Top Restaurants</Text>
+                    </View>
+
+                    <FlatList 
+                    horizontal
+                    showsHorizontalScrollIndicator={false} 
+                    data={restaurants} 
+                    renderItem={({item}) => <RestaurantCard item={item} onTap={() => {Alert.alert('Category Tapped')}} />} 
+                    keyExtractor={(item) => `${item._id}`} />
+
+                    <View>
+                        <Text style={styles.restaurantsTitle} >30 Minutes Foods</Text>
+                    </View>
+
+                    <FlatList 
+                    horizontal
+                    showsHorizontalScrollIndicator={false} 
+                    data={foods} 
+                    renderItem={({item}) => <RestaurantCard item={item} onTap={() => {Alert.alert('Category Tapped')}} />} 
+                    keyExtractor={(item) => `${item._id}`} />
+
                 </ScrollView>
+                
              
             </View>
         </View>
@@ -100,4 +124,10 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
+    restaurantsTitle: {
+        fontSize: 25,
+        fontWeight: "800",
+        color: "#f15b5d",
+        marginLeft: 20
+    }
 })
