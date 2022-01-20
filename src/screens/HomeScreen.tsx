@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, Image } from 'react-native';
 import { connect } from 'react-redux';
+import { SearchBar } from '../components';
 import { onAvailability, UserState, ApplicationState, ShoppingState } from '../redux'
+import { useNavigation } from '../utils'
 
 interface HomeProps {
     userReducer: UserState,
@@ -15,6 +17,8 @@ const _HomeScreen: React.FC<HomeProps> = (props) => {
     const { availability } = props.shoppingReducer
     const { categories, foods, restaurants } = availability
  
+    const { navigate } = useNavigation()
+
     useEffect(() => {
 
         props.onAvailability(postCode)
@@ -29,16 +33,19 @@ const _HomeScreen: React.FC<HomeProps> = (props) => {
                     <Text>Edit</Text>
                 </View>
                 <View style={styles.search_bar_container} >
-                    <Text>Search Bar</Text>
+                    <SearchBar 
+                    didTouch={() => {
+                        navigate('SearchPage')
+                    }}
+                    onTextChange={() => {}} />
                 </View>
-                
             </View>
             <View style={styles.body} >
-                <Text>Home Screen</Text>
+                
+
+
             </View>
-            <View style={styles.footer} >
-                <Text>Footer</Text>
-            </View>
+            
         </View>
     )
 
@@ -73,7 +80,7 @@ const styles = StyleSheet.create({
         flexDirection: "row"
     },
     search_bar_container: {
-        flex: 3,
+        flex: 8,
         backgroundColor: "green"
     },
     body: {
