@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, Image } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Image, Alert } from 'react-native';
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
-import { ButtonWithIcon, SearchBar } from '../components';
+import { ButtonWithIcon, CategoryCard, SearchBar } from '../components';
 import { onAvailability, UserState, ApplicationState, ShoppingState } from '../redux'
 import { useNavigation } from '../utils'
 
@@ -44,6 +45,14 @@ const _HomeScreen: React.FC<HomeProps> = (props) => {
             </View>
 
             <View style={styles.body} >
+                <ScrollView>
+                    <FlatList 
+                    horizontal
+                    showsHorizontalScrollIndicator={false} 
+                    data={categories} 
+                    renderItem={({item}) => <CategoryCard item={item} onTap={() => {Alert.alert('Category Tapped')}} />} 
+                    keyExtractor={(item) => `${item.id}`} />
+                </ScrollView>
              
             </View>
         </View>
