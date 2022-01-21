@@ -58,7 +58,7 @@ export const onSearchFoods = (postCode: string) => {
 
         try {
 
-            const response = await axios.get<[FoodModel]>(`${BASE_URL}food/availability/${postCode}`)
+            const response = await axios.get<[FoodModel]>(`${BASE_URL}food/search/${postCode}`)
 
             if(!response) {
                 dispatch({

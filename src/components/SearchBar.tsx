@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Image } from 'react-native';
 
 interface SearchBarProps {
     onEndEditing: any | undefined,
@@ -14,14 +14,16 @@ const SearchBar: React.FC<SearchBarProps> = ({ onEndEditing, didTouch, autoFocus
         <View style={styles.container} >
             <View style={styles.searchBar} >
                 <Image style={{width: 20, height: 20}} source={require('../images/search.png')} />
-                <TextInput 
-                    style={styles.textInput}
-                    placeholder={'Search Foods'}
-                    autoFocus={autoFocus}
-                    onTouchStart={didTouch}
-                    onChangeText={(text) => onTextChange(text)}
-                    onEndEditing={onEndEditing}
-                />
+                    <TextInput 
+                        style={styles.textInput}
+                        placeholder={'Search Foods'}
+                        autoFocus={autoFocus}
+                        onTouchStart={didTouch}
+                        onChangeText={(text) => onTextChange(text)}
+                        onEndEditing={onEndEditing}
+                        keyboardType='numeric'
+                        showSoftInputOnFocus={false}
+                    />
             </View>
         </View>
     )

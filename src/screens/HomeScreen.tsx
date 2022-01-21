@@ -3,13 +3,14 @@ import { View, Text, StyleSheet, Dimensions, Image, Alert } from 'react-native';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import { ButtonWithIcon, CategoryCard, RestaurantCard, SearchBar } from '../components';
-import { onAvailability, UserState, ApplicationState, ShoppingState, Restaurant, FoodModel } from '../redux'
+import { onAvailability, onSearchFoods, UserState, ApplicationState, ShoppingState, Restaurant, FoodModel } from '../redux'
 import { useNavigation } from '../utils'
 
 interface HomeProps {
     userReducer: UserState,
     shoppingReducer: ShoppingState,
-    onAvailability: Function
+    onAvailability: Function,
+    onSearchFoods: Function
 }
 
 const _HomeScreen: React.FC<HomeProps> = (props) => {
@@ -21,8 +22,11 @@ const _HomeScreen: React.FC<HomeProps> = (props) => {
     const { navigate } = useNavigation()
 
     useEffect(() => {
-
         props.onAvailability(postCode)
+
+        setTimeout(() => {
+            props.onSearchFoods(postCode)
+        }, 1000);
 
     }, [])
 
@@ -98,7 +102,7 @@ const mapToStateProps = (state: ApplicationState) => ({
     shoppingReducer: state.shoppingReducer
 })
 
-const HomeScreen = connect(mapToStateProps, {onAvailability})(_HomeScreen)
+const HomeScreen = connect(mapToStateProps, {onAvailability, onSearchFoods})(_HomeScreen)
 
 export { HomeScreen }
 
