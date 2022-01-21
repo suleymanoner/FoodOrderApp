@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Dimensions, Image, Alert } from 'react-native';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import { ButtonWithIcon, CategoryCard, RestaurantCard, SearchBar } from '../components';
-import { onAvailability, UserState, ApplicationState, ShoppingState } from '../redux'
+import { onAvailability, UserState, ApplicationState, ShoppingState, Restaurant, FoodModel } from '../redux'
 import { useNavigation } from '../utils'
 
 interface HomeProps {
@@ -25,6 +25,15 @@ const _HomeScreen: React.FC<HomeProps> = (props) => {
         props.onAvailability(postCode)
 
     }, [])
+
+    const onTapRestaurant = (item: Restaurant) => {
+        navigate('RestaurantPage', { restaurant: item })
+    }
+
+    const onTapFood = (item: FoodModel) => {
+        navigate('RestaurantPage', { food: item })
+    }
+
 
     return(
         <View style={styles.container} >
@@ -61,7 +70,7 @@ const _HomeScreen: React.FC<HomeProps> = (props) => {
                     horizontal
                     showsHorizontalScrollIndicator={false} 
                     data={restaurants} 
-                    renderItem={({item}) => <RestaurantCard item={item} onTap={() => {Alert.alert('Category Tapped')}} />} 
+                    renderItem={({item}) => <RestaurantCard item={item} onTap={onTapRestaurant} />} 
                     keyExtractor={(item) => `${item._id}`} />
 
                     <View>
@@ -72,7 +81,7 @@ const _HomeScreen: React.FC<HomeProps> = (props) => {
                     horizontal
                     showsHorizontalScrollIndicator={false} 
                     data={foods} 
-                    renderItem={({item}) => <RestaurantCard item={item} onTap={() => {Alert.alert('Category Tapped')}} />} 
+                    renderItem={({item}) => <RestaurantCard item={item} onTap={onTapFood} />} 
                     keyExtractor={(item) => `${item._id}`} />
 
                 </ScrollView>
