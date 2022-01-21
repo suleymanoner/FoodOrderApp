@@ -8,10 +8,8 @@ interface ButtonProps {
     icon: ImageSourcePropType
 }
 
-const ButtonWithIcon: React.FC<ButtonProps> = (props) => {
-
-    const { onTap, width, height, icon } = props
-
+const ButtonWithIcon: React.FC<ButtonProps> = ({ onTap, width, height, icon }) => {
+    
     return(
         <TouchableOpacity style={[styles.button, { width, height }]} 
             onPress={() => onTap()}

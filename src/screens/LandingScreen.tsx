@@ -15,9 +15,7 @@ interface LandingProps {
 }
 
 
-const _LandingScreen: React.FC<LandingProps> = (props) => {
-
-    const { userReducer,  onUpdateLocation } = props
+const _LandingScreen: React.FC<LandingProps> = ({ userReducer,  onUpdateLocation }) => {
 
     const { navigate } = useNavigation()
 

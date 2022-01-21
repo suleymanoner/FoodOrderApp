@@ -7,9 +7,7 @@ interface CategoryProps {
     onTap: Function
 }
 
-const CategoryCard: React.FC<CategoryProps> = (props) => {
-
-    const { item, onTap } = props
+const CategoryCard: React.FC<CategoryProps> = ({ item, onTap }) => {
 
     return(
         <TouchableOpacity style={styles.container} onPress={() => onTap(item)} >

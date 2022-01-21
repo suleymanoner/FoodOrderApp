@@ -10,9 +10,7 @@ interface RestaurantProps {
 }
 
 
-const RestaurantCard: React.FC<RestaurantProps> = (props) => {
-
-    const { item, onTap } = props
+const RestaurantCard: React.FC<RestaurantProps> = ({ item, onTap }) => {
 
     return(
         <TouchableOpacity style={styles.container} onPress={() => onTap(item)} >
