@@ -31,7 +31,7 @@ const _HomeScreen: React.FC<HomeProps> = (props) => {
     }
 
     const onTapFood = (item: FoodModel) => {
-        navigate('RestaurantPage', { food: item })
+        navigate('FoodDetailsPage', { food: item })
     }
 
 

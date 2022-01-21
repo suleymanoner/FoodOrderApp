@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
+import { ButtonAddRemove } from '.';
 import { FoodModel } from '../redux';
 
 interface FoodCardProps {
@@ -20,6 +21,7 @@ const FoodCard: React.FC<FoodCardProps> = ({ item, onTap }) => {
                 </View>
                 <View style={styles.price_container} >
                     <Text style={styles.price_text} >{item.price}</Text>
+                    <ButtonAddRemove onTap={() => {}} />
                 </View>
             </TouchableOpacity>
         </View>
@@ -30,7 +32,16 @@ const FoodCard: React.FC<FoodCardProps> = ({ item, onTap }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "green"
+        width: Dimensions.get('screen').width - 20,
+        margin: 10,
+        borderRadius: 20,
+        backgroundColor: "#FFF",
+        height: 100,
+        justifyContent: "flex-start",
+        borderWidth: 1,
+        borderColor: "#E5E5E5",
+        flexDirection: "row",
+        
     },
     image: {
         width: 100,

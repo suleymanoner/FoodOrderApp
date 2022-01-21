@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground, Dimensions } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import { ButtonWithIcon } from '../components';
-import { Restaurant } from '../redux';
+import { ButtonWithIcon, FoodCard } from '../components';
+import { FoodModel, Restaurant } from '../redux';
+import { useNavigation } from '../utils'
 
 interface RestaurantProps {
     navigation: { getParam: Function, goBack: Function }
@@ -14,6 +15,12 @@ const RestaurantScreen: React.FC<RestaurantProps> = (props) => {
     const { getParam, goBack } = props.navigation
 
     const restaurant = getParam('restaurant') as Restaurant
+
+    const { navigate } = useNavigation()
+
+    const onTapFood = (item: FoodModel) => {
+        navigate('FoodDetailsPage', { food: item })
+    }
 
     return(
         <View style={styles.container}>
@@ -33,8 +40,8 @@ const RestaurantScreen: React.FC<RestaurantProps> = (props) => {
                 <FlatList 
                  showsVerticalScrollIndicator={false} 
                  data={restaurant.foods}
-                 renderItem={({item}) => <View  />} 
-                 keyExtractor={({item}) => `${item.id}`} />
+                 renderItem={({item}) => <FoodCard item={item} onTap={onTapFood} />} 
+                 keyExtractor={(item) => `${item._id}`} />
 
             </View>
         </View>
@@ -55,7 +62,7 @@ const styles = StyleSheet.create({
         alignItems: "center",        
     },
     body: {
-        flex: 10,
+        flex: 11,
         justifyContent: "flex-start",
         alignItems: "center",
         backgroundColor: "#FFF"
