@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { ApplicationState, FoodModel, ShoppingState, onUpdateCart, UserState } from '../redux';
 import { ButtonWithIcon, FoodCard, SearchBar } from '../components'
 import { FlatList } from 'react-native-gesture-handler';
-import { useNavigation } from '../utils'
+import { checkExistence, useNavigation } from '../utils'
 
 
 interface SearchScreenProps {
@@ -44,7 +44,7 @@ const _SearchScreen: React.FC<SearchScreenProps> = (props) => {
                         return item.name.toLocaleLowerCase().includes(keyword)
                     }) : availableFoods
                 }
-                renderItem={({item}) => <FoodCard item={item} onTap={onTapFood} onUpdateCart={() => {}} /> } 
+                renderItem={({item}) => <FoodCard item={checkExistence(item, cart)} onTap={onTapFood} onUpdateCart={props.onUpdateCart} /> } 
                 keyExtractor={(item) => `${item._id}`} />
             </View>
         </View>

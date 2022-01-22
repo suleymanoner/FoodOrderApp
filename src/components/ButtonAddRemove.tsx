@@ -13,13 +13,13 @@ const ButtonAddRemove: React.FC<ButtonProps> = ({ onAdd, unit, onRemove }) => {
     if(unit > 0) {
         return(
             <View style={styles.optionsView} >
-                <TouchableOpacity style={styles.btn_plus_minus} onPress={() => onAdd()} >
+                <TouchableOpacity style={styles.btn_plus_minus} onPress={() => onRemove()} >
                     <Text style={styles.text} >-</Text>
                 </TouchableOpacity>
                 <View style={styles.unit_container} >
                     <Text style={styles.unit_text} >{unit}</Text>
                 </View>
-                <TouchableOpacity style={styles.btn_plus_minus} onPress={() => onRemove()} >
+                <TouchableOpacity style={styles.btn_plus_minus} onPress={() => onAdd()} >
                     <Text style={styles.text} >+</Text>
                 </TouchableOpacity>
             </View>
