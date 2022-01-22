@@ -5,3 +5,4 @@ export * from './RestaurantCard';
 export * from './FoodCard';
 export * from './ButtonAddRemove';
 export * from './FoodCartInfo';
+export * from './ButtonWithTitle';

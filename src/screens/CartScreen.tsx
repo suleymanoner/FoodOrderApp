@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { ApplicationState, FoodModel, ShoppingState, onUpdateCart, UserState } from '../redux';
-import { FoodCardInfo } from '../components'
+import { ButtonWithTitle, FoodCardInfo } from '../components'
 import { FlatList } from 'react-native-gesture-handler';
 import { checkExistence, useNavigation } from '../utils'
 
@@ -23,7 +23,7 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
         navigate('FoodDetailsPage', { food: item })
     }
 
-    
+
     useEffect(() => {
         onCalculateAmount()
     }, [cart])
@@ -62,6 +62,7 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
                         <Text style={styles.total_text} >Total</Text>
                         <Text style={styles.total_text} >{totalAmount} ₺</Text>
                     </View>
+                    <ButtonWithTitle title={"Order Now"} onTap={() => {}} height={50} width={320}/>
                 </View>
             </View>
         )
@@ -111,7 +112,6 @@ const styles = StyleSheet.create({
     },
     footer: {
         flex: 2,
-        backgroundColor: "red",
         padding: 10,
     },
     amount_container: {
