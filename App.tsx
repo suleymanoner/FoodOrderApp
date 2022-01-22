@@ -10,6 +10,7 @@ import { store } from './src/redux'
 import { SearchScreen } from './src/screens/SearchScreen';
 import { RestaurantScreen } from './src/screens/RestaurantScreen';
 import { FoodDetailsScreen } from './src/screens/FoodDetailsScreen';
+import { CartScreen } from './src/screens/CartScreen';
 
 
 const switchNavigator = createSwitchNavigator({
@@ -59,7 +60,11 @@ const switchNavigator = createSwitchNavigator({
 
     Cart: {
       screen: createStackNavigator({
-        CartPage: HomeScreen
+        CartPage: CartScreen
+      }, {
+        defaultNavigationOptions: {
+          headerShown: false
+        }
       }),
       navigationOptions: {
         tabBarIcon: ({focused, tintColor}) => {
