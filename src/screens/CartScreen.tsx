@@ -39,6 +39,10 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
         setTotalAmount(total)
     }
 
+    const onValidateOrder = () => {
+        navigate('LoginPage')
+    }
+
 
     if(cart.length > 0) {
 
@@ -62,7 +66,7 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
                         <Text style={styles.total_text} >Total</Text>
                         <Text style={styles.total_text} >{totalAmount} ₺</Text>
                     </View>
-                    <ButtonWithTitle title={"Order Now"} onTap={() => {}} height={50} width={320}/>
+                    <ButtonWithTitle title={"Order Now"} onTap={onValidateOrder} height={50} width={320}/>
                 </View>
             </View>
         )
