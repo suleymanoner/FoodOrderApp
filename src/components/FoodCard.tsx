@@ -5,11 +5,21 @@ import { FoodModel } from '../redux';
 
 interface FoodCardProps {
     item: FoodModel,
-    onTap: Function
+    onTap: Function,
+    onUpdateCart: Function
 }
 
 
-const FoodCard: React.FC<FoodCardProps> = ({ item, onTap }) => {
+const FoodCard: React.FC<FoodCardProps> = ({ item, onTap, onUpdateCart }) => {
+
+    const didUpdateCart = (unit: number) => {
+
+        item.unit = unit
+        onUpdateCart(item)
+
+
+    }
+
 
     return(
         <View style={styles.container}>
@@ -20,8 +30,18 @@ const FoodCard: React.FC<FoodCardProps> = ({ item, onTap }) => {
                     <Text>{item.category}</Text>
                 </View>
                 <View style={styles.price_container} >
-                    <Text style={styles.price_text} >{item.price}</Text>
-                    <ButtonAddRemove onTap={() => {}} />
+                    <Text style={styles.price_text} >{item.price} ₺</Text>
+                    <ButtonAddRemove 
+                    unit={item.unit}
+                    onAdd={() => {
+                        let unit = isNaN(item.unit) ? 0 : item.unit
+                        didUpdateCart(unit + 1)
+                    }} 
+
+                    onRemove={() => {
+                        let unit = isNaN(item.unit) ? 0 : item.unit
+                        didUpdateCart(unit > 0 ? unit - 1 : unit)
+                    }} />
                 </View>
             </TouchableOpacity>
         </View>
@@ -56,15 +76,16 @@ const styles = StyleSheet.create({
     },
     text_container: {
         display: "flex",
-        flex: 8,
+        flex: 7,
         padding: 10,
     },
     price_container: {
         display: "flex",
-        flex: 4,
+        flex: 5,
         padding: 10,
         justifyContent: "space-around",
         alignItems: "center",
+        marginRight: 10
     },
     price_text: {
         fontSize: 18,

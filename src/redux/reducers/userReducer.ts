@@ -1,12 +1,13 @@
 import { UserAction } from "../actions"
-import { UserModel, UserState } from "../models"
+import { FoodModel, UserModel, UserState } from "../models"
 
 
 const initialState: UserState = {
     user: {} as UserModel,
     location: "" as string,
     postCode: "" as string,
-    error: undefined
+    error: undefined,
+    cart: {} as [FoodModel]
 }
 
 
@@ -20,7 +21,10 @@ const UserReducer = (state: UserState = initialState, action: UserAction) => {
                 location: action.payload,
                 postCode: action.postCode
             }
-    
+
+        case "ON_UPDATE_CART":
+            console.log(action.payload)
+            break
         default:
             return state;
     }

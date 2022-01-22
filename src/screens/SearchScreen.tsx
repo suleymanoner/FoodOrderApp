@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
-import { ApplicationState, FoodModel, ShoppingState } from '../redux';
+import { ApplicationState, FoodModel, ShoppingState, onUpdateCart, UserState } from '../redux';
 import { ButtonWithIcon, FoodCard, SearchBar } from '../components'
 import { FlatList } from 'react-native-gesture-handler';
 import { useNavigation } from '../utils'
 
 
 interface SearchScreenProps {
+    userReducer: UserState,
     shoppingReducer: ShoppingState,
+    onUpdateCart: Function
 }
 
 const _SearchScreen: React.FC<SearchScreenProps> = (props) => {
@@ -18,6 +20,7 @@ const _SearchScreen: React.FC<SearchScreenProps> = (props) => {
 
     const { availableFoods } = props.shoppingReducer
     const { navigate } = useNavigation()
+    const { cart } = props.userReducer
 
     const onTapFood = (item: FoodModel) => {
         navigate('FoodDetailsPage', { food: item })
@@ -41,7 +44,7 @@ const _SearchScreen: React.FC<SearchScreenProps> = (props) => {
                         return item.name.toLocaleLowerCase().includes(keyword)
                     }) : availableFoods
                 }
-                renderItem={({item}) => <FoodCard item={item} onTap={onTapFood} /> } 
+                renderItem={({item}) => <FoodCard item={item} onTap={onTapFood} onUpdateCart={() => {}} /> } 
                 keyExtractor={(item) => `${item._id}`} />
             </View>
         </View>
@@ -73,9 +76,10 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = (state: ApplicationState) => ({
-    shoppingReducer: state.shoppingReducer
+    shoppingReducer: state.shoppingReducer,
+    userReducer: state.userReducer
 })
 
-const SearchScreen = connect(mapStateToProps, {})(_SearchScreen)
+const SearchScreen = connect(mapStateToProps, { onUpdateCart })(_SearchScreen)
 
 export { SearchScreen }
