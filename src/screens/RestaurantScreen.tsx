@@ -2,21 +2,26 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground, Dimensions } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { ButtonWithIcon, FoodCard } from '../components';
-import { FoodModel, Restaurant } from '../redux';
-import { useNavigation } from '../utils'
+import { FoodModel, Restaurant, ApplicationState, onUpdateCart, UserState } from '../redux';
+import { checkExistence, useNavigation } from '../utils'
+import { connect } from 'react-redux';
 
 interface RestaurantProps {
+    userReducer: UserState,
+    onUpdateCart: Function,
     navigation: { getParam: Function, goBack: Function }
 }
 
 
-const RestaurantScreen: React.FC<RestaurantProps> = (props) => {
+const _RestaurantScreen: React.FC<RestaurantProps> = (props) => {
 
     const { getParam, goBack } = props.navigation
 
     const restaurant = getParam('restaurant') as Restaurant
 
     const { navigate } = useNavigation()
+
+    const { cart } = props.userReducer
 
     const onTapFood = (item: FoodModel) => {
         navigate('FoodDetailsPage', { food: item })
@@ -40,7 +45,7 @@ const RestaurantScreen: React.FC<RestaurantProps> = (props) => {
                 <FlatList 
                  showsVerticalScrollIndicator={false} 
                  data={restaurant.foods}
-                 renderItem={({item}) => <FoodCard item={item} onTap={onTapFood} />} 
+                 renderItem={({item}) => <FoodCard item={checkExistence(item, cart)} onTap={onTapFood} onUpdateCart={props.onUpdateCart} />} 
                  keyExtractor={(item) => `${item._id}`} />
 
             </View>
@@ -95,5 +100,12 @@ const styles = StyleSheet.create({
     }
 })
 
+
+const mapStateToProps = (state: ApplicationState) => ({
+    shoppingReducer: state.shoppingReducer,
+    userReducer: state.userReducer
+})
+
+const RestaurantScreen = connect(mapStateToProps, { onUpdateCart })(_RestaurantScreen)
 
 export { RestaurantScreen }
