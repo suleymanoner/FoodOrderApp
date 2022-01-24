@@ -2,7 +2,7 @@ import axios from "axios";
 import { Dispatch } from "react";
 import { BASE_URL } from "../../utils";
 import AsyncStorage from "@react-native-community/async-storage";
-import { FoodModel } from "..";
+import { FoodModel, UserModel } from "..";
 
 export interface UpdateLocationAction {
     readonly type: "ON_UPDATE_LOCATION",
@@ -22,7 +22,7 @@ export interface UpdateCartAction {
 
 export interface UserLoginAction {
     readonly type: "ON_USER_LOGIN",
-    payload: string
+    payload: UserModel
 }
 
 export type UserAction = UpdateLocationAction | UserErrorAction | UpdateCartAction | UserLoginAction
@@ -70,7 +70,7 @@ export const onUserLogin = (email: string, password: string) => {
     return async (dispatch: Dispatch<UserAction>) => {
 
         try {
-            const response = await axios.post<string>(`${BASE_URL}user/login`, {
+            const response = await axios.post<UserModel>(`${BASE_URL}user/login`, {
                 email,
                 password
             })
@@ -102,7 +102,7 @@ export const onUserSignUp = (email: string, phone: string, password: string) => 
     return async (dispatch: Dispatch<UserAction>) => {
 
         try {
-            const response = await axios.post<string>(`${BASE_URL}user/signup`, {
+            const response = await axios.post<UserModel>(`${BASE_URL}user/signup`, {
                 email,
                 phone,
                 password

@@ -16,7 +16,7 @@ interface CartScreenProps {
 const _CartScreen: React.FC<CartScreenProps> = (props) => {
 
     const { navigate } = useNavigation()
-    const { cart } = props.userReducer
+    const { cart, user } = props.userReducer
     const [totalAmount, setTotalAmount] = useState(0)
 
     const onTapFood = (item: FoodModel) => {
@@ -42,7 +42,15 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
     }
 
     const onValidateOrder = () => {
-        navigate('LoginPage')
+
+        if(!user.verified) {
+            navigate('LoginPage')
+        } else {
+            // place order
+        }
+
+
+        
     }
 
 

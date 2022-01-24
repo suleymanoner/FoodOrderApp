@@ -6,16 +6,17 @@ interface ButtonProps {
     width: number,
     height: number,
     title: string,
-    isNoBg?: boolean
+    isNoBg?: boolean,
+    disable?: boolean
 }
 
-const ButtonWithTitle: React.FC<ButtonProps> = ({ onTap, width, height, title, isNoBg = false }) => {
+const ButtonWithTitle: React.FC<ButtonProps> = ({ onTap, width, height, title, isNoBg = false, disable = false }) => {
     
 
     if(isNoBg) {
         return(
-            <TouchableOpacity style={[styles.button, { width, height, backgroundColor: "transparent" }]} onPress={() => onTap()} >
-                <Text style={[styles.text, { color: "#3980D9" }]} >{title}</Text>
+            <TouchableOpacity style={[styles.button, { width, height, backgroundColor: "transparent" }]} onPress={() => onTap()} disabled={disable} >
+                <Text style={[styles.text, { color: disable ? "#6F6F6F" : "#3980D9" }]} >{title}</Text>
             </TouchableOpacity>
         )
     } else {
