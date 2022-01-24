@@ -14,6 +14,7 @@ const TextField: React.FC<TextFieldProps> = ({ placeholder, isSecure = false, on
         <View style={styles.container} >
             <TextInput 
             placeholder={placeholder}
+            placeholderTextColor={"#f14b5d"}
             autoCapitalize='none'
             secureTextEntry={isSecure}
             showSoftInputOnFocus={false}
@@ -41,6 +42,7 @@ const styles = StyleSheet.create({
     },
     textField: {
         flex: 1,
+        width: 320,
         height: 50,
         fontSize: 20,
         color: "#000"
