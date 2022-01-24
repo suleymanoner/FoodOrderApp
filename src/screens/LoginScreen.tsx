@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, Image } from 'react-native';
 import { connect } from 'react-redux'
 import { ButtonWithIcon, ButtonWithTitle, TextField } from '../components';
@@ -20,7 +20,19 @@ const _LoginScreen: React.FC<LoginProps> = ({ onUserLogin, onUserSignUp, userRed
     const [otp, setOtp] = useState("")
     const [verified, setVerified] = useState(false)
     const [requestOtpTitle, setRequestOtpTitle] = useState("Request a new OTP in")
-    const [canRequestOtp, setCanRequestOtp] = useState(true)
+    const [canRequestOtp, setCanRequestOtp] = useState(false)
+
+    let countDown: NodeJS.Timer
+
+    useEffect(() => {
+
+        onEnableOtpRequest()
+
+        return () => {
+            clearInterval(countDown)
+        }
+
+    }, [])
 
     const onTapOptions = () => {
         setIsSignup(!isSignup)
@@ -36,6 +48,35 @@ const _LoginScreen: React.FC<LoginProps> = ({ onUserLogin, onUserSignUp, userRed
     }
 
 
+    const onEnableOtpRequest = () => {
+
+        const otpDate = new Date()
+        otpDate.setTime(new Date().getTime() + (2 * 60 * 1000))
+        const optTime = otpDate.getTime()
+
+        countDown = setInterval(function() {
+
+            const currentTime = new Date().getTime()
+            const totalTime = optTime - currentTime
+
+            let minutes = Math.floor((totalTime % (1000 * 60 * 60)) / (1000 * 60))
+            let seconds = Math.floor((totalTime % (1000 * 60)) / 1000)
+
+            if(seconds < 10) {
+                setRequestOtpTitle(`Request a new OTP in ${minutes}:0${seconds}`)
+            } else {
+                setRequestOtpTitle(`Request a new OTP in ${minutes}:${seconds}`)
+            }
+
+            if(minutes < 1 && seconds < 1) {
+                setRequestOtpTitle("Request a new OTP")
+                setCanRequestOtp(true)
+                clearInterval(countDown)
+            }
+        }, 1000)
+    }
+
+
     if(!verified) {
 
         return(
@@ -48,7 +89,7 @@ const _LoginScreen: React.FC<LoginProps> = ({ onUserLogin, onUserSignUp, userRed
                     <TextField isOTP={true} placeholder='OTP' onTextChange={() => {}} />
 
                     <ButtonWithTitle title='Verify OTP' onTap={() => {}} width={340} height={50} />
-                    <ButtonWithTitle disable={canRequestOtp} title={requestOtpTitle} isNoBg={true} onTap={() => {}} width={340} height={50} />
+                    <ButtonWithTitle disable={!canRequestOtp} title={requestOtpTitle} isNoBg={true} onTap={() => {}} width={340} height={50} />
 
 
                 </View>
