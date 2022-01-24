@@ -32,10 +32,12 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
     const onCalculateAmount = () => {
 
         let total = 0
-        cart.map(food => {
-            total += food.price * food.unit
-        })
-
+        if(Array.isArray(cart)){
+            cart.map(food => {
+                total += food.price * food.unit
+            })
+        }
+        
         setTotalAmount(total)
     }
 

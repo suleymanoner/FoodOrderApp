@@ -1,20 +1,30 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, ImageSourcePropType } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 interface ButtonProps {
     onTap: Function,
     width: number,
     height: number,
-    title: string
+    title: string,
+    isNoBg?: boolean
 }
 
-const ButtonWithTitle: React.FC<ButtonProps> = ({ onTap, width, height, title }) => {
+const ButtonWithTitle: React.FC<ButtonProps> = ({ onTap, width, height, title, isNoBg = false }) => {
     
-    return(
-        <TouchableOpacity style={[styles.button, { width, height }]} onPress={() => onTap()} >
-            <Text style={styles.text} >{title}</Text>
-        </TouchableOpacity>
-    )
+
+    if(isNoBg) {
+        return(
+            <TouchableOpacity style={[styles.button, { width, height, backgroundColor: "transparent" }]} onPress={() => onTap()} >
+                <Text style={[styles.text, { color: "#3980D9" }]} >{title}</Text>
+            </TouchableOpacity>
+        )
+    } else {
+        return(
+            <TouchableOpacity style={[styles.button, { width, height }]} onPress={() => onTap()} >
+                <Text style={styles.text} >{title}</Text>
+            </TouchableOpacity>
+        )
+    }
 }
 
 const styles = StyleSheet.create({

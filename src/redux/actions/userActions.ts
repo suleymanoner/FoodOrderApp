@@ -20,8 +20,12 @@ export interface UpdateCartAction {
     payload: FoodModel
 }
 
+export interface UserLoginAction {
+    readonly type: "ON_USER_LOGIN",
+    payload: string
+}
 
-export type UserAction = UpdateLocationAction | UserErrorAction | UpdateCartAction
+export type UserAction = UpdateLocationAction | UserErrorAction | UpdateCartAction | UserLoginAction
 
 
 export const onUpdateLocation = (location: string, postCode: string) => {
@@ -57,5 +61,70 @@ export const onUpdateCart = (item: FoodModel) => {
             payload: item
         })
 
+    }
+}
+
+
+export const onUserLogin = (email: string, password: string) => {
+
+    return async (dispatch: Dispatch<UserAction>) => {
+
+        try {
+            const response = await axios.post<string>(`${BASE_URL}user/login`, {
+                email,
+                password
+            })
+
+            if(!response) {
+                dispatch({
+                    type: "ON_USER_ERROR",
+                    payload: "User Login Error"
+                })
+            } else {
+                dispatch({
+                    type: "ON_USER_LOGIN",
+                    payload: response.data
+                })
+            }
+            
+        } catch (error) {
+            dispatch({
+                type: "ON_USER_ERROR",
+                payload: error
+            })
+        }
+    }
+}
+
+
+export const onUserSignUp = (email: string, phone: string, password: string) => {
+
+    return async (dispatch: Dispatch<UserAction>) => {
+
+        try {
+            const response = await axios.post<string>(`${BASE_URL}user/signup`, {
+                email,
+                phone,
+                password
+            })
+
+            if(!response) {
+                dispatch({
+                    type: "ON_USER_ERROR",
+                    payload: "User Login Error"
+                })
+            } else {
+                dispatch({
+                    type: "ON_USER_LOGIN",
+                    payload: response.data
+                })
+            }
+            
+        } catch (error) {
+            dispatch({
+                type: "ON_USER_ERROR",
+                payload: error
+            })
+        }
     }
 }
