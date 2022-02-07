@@ -2,15 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, Image } from 'react-native';
 import { connect } from 'react-redux'
 import { ButtonWithIcon, ButtonWithTitle, TextField } from '../components';
-import { ApplicationState, onUserLogin, onUserSignUp, UserState } from '../redux';
+import { ApplicationState, onUserLogin, onUserSignUp, UserState, onOTPRequest, onVerifyOTP } from '../redux';
+import { useNavigation } from '../utils'
 
 interface LoginProps {
     onUserSignUp: Function,
     onUserLogin: Function,
-    userReducer: UserState
+    userReducer: UserState,
+    onOTPRequest: Function,
+    onVerifyOTP: Function
 }
 
-const _LoginScreen: React.FC<LoginProps> = ({ onUserLogin, onUserSignUp, userReducer }) => {
+// for development, we can use OTP: 494949, if requested new OTP it will be: 595959
+
+const _LoginScreen: React.FC<LoginProps> = ({ onUserLogin, onUserSignUp, userReducer, onOTPRequest, onVerifyOTP }) => {
 
     const [email, setEmail] = useState("")
     const [phone, setPhone] = useState("")
@@ -18,21 +23,34 @@ const _LoginScreen: React.FC<LoginProps> = ({ onUserLogin, onUserSignUp, userRed
     const [title, setTitle] = useState('Login')
     const [isSignup, setIsSignup] = useState(false)
     const [otp, setOtp] = useState("")
-    const [verified, setVerified] = useState(false)
+    const [verified, setVerified] = useState(true)
     const [requestOtpTitle, setRequestOtpTitle] = useState("Request a new OTP in")
     const [canRequestOtp, setCanRequestOtp] = useState(false)
+
+    const { user } = userReducer
+    const { navigate } = useNavigation()
+
+
 
     let countDown: NodeJS.Timer
 
     useEffect(() => {
 
-        onEnableOtpRequest()
+        if(user.verified !== undefined) {
+
+            if(user.verified === true) {
+                navigate('CartPage')
+            } else {
+                setVerified(user.verified)
+                onEnableOtpRequest()
+            }
+        }
 
         return () => {
             clearInterval(countDown)
         }
 
-    }, [])
+    }, [user])
 
     const onTapOptions = () => {
         setIsSignup(!isSignup)
@@ -77,6 +95,17 @@ const _LoginScreen: React.FC<LoginProps> = ({ onUserLogin, onUserSignUp, userRed
     }
 
 
+    const onTapVerify = () => {
+        onVerifyOTP(otp, user) 
+    }
+
+    const onTapRequestNewOTP = () => {
+        setCanRequestOtp(false)
+        onOTPRequest(user)
+    }
+
+
+
     if(!verified) {
 
         return(
@@ -86,11 +115,11 @@ const _LoginScreen: React.FC<LoginProps> = ({ onUserLogin, onUserSignUp, userRed
                     <Image source={require('../images/otp_photo.png')} style={styles.image} />
                     <Text style={styles.text_ver_title} >Verification</Text>
                     <Text style={styles.text_enter_number_title} >Enter your OTP sent to your mobile number</Text>
-                    <TextField isOTP={true} placeholder='OTP' onTextChange={() => {}} />
+                    <TextField isOTP={true} placeholder='OTP' onTextChange={setOtp} />
 
-                    <ButtonWithTitle title='Verify OTP' onTap={() => {}} width={340} height={50} />
-                    <ButtonWithTitle disable={!canRequestOtp} title={requestOtpTitle} isNoBg={true} onTap={() => {}} width={340} height={50} />
-
+                    <ButtonWithTitle title='Verify OTP' onTap={onTapVerify} width={340} height={50} />
+                    <ButtonWithTitle disable={!canRequestOtp} title={requestOtpTitle} 
+                    isNoBg={true} onTap={onTapRequestNewOTP} width={340} height={50} />
 
                 </View>
                 
@@ -98,9 +127,6 @@ const _LoginScreen: React.FC<LoginProps> = ({ onUserLogin, onUserSignUp, userRed
                 <View style={styles.footer} ></View>
             </View>
         )
-
-
-
 
     } else {
 
@@ -171,6 +197,6 @@ const mapStateToProps = (state: ApplicationState) => ({
     userReducer: state.userReducer
 })
 
-const LoginScreen = connect(mapStateToProps, { onUserSignUp, onUserLogin })(_LoginScreen)
+const LoginScreen = connect(mapStateToProps, { onUserSignUp, onUserLogin, onVerifyOTP, onOTPRequest })(_LoginScreen)
 
 export { LoginScreen }

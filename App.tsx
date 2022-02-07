@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, StyleSheet, Text } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import { LandingScreen } from './src/screens/LandingScreen';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
@@ -99,7 +99,6 @@ const App = () => {
     <Provider store={store} >
       <AppNavigation />
     </Provider>
-    
   )
 }
 
