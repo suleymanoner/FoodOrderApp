@@ -112,7 +112,7 @@ const _LoginScreen: React.FC<LoginProps> = ({ onUserLogin, onUserSignUp, userRed
             <View style={styles.container} >
                 <View style={styles.body} >
 
-                    <Image source={require('../images/otp_photo.png')} style={styles.image} />
+                    <Image source={require('../images/verify_otp.png')} style={styles.image} />
                     <Text style={styles.text_ver_title} >Verification</Text>
                     <Text style={styles.text_enter_number_title} >Enter your OTP sent to your mobile number</Text>
                     <TextField isOTP={true} placeholder='OTP' onTextChange={setOtp} />
