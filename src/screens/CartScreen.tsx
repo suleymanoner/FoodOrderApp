@@ -11,7 +11,8 @@ import PaymentTypePopup from 'react-native-raw-bottom-sheet'
 interface CartScreenProps {
     userReducer: UserState,
     shoppingReducer: ShoppingState,
-    onUpdateCart: Function
+    onUpdateCart: Function,
+    onCreateOrder: Function
 }
 
 const _CartScreen: React.FC<CartScreenProps> = (props) => {
@@ -47,14 +48,13 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
 
     const onValidateOrder = () => {
 
-        // login and signup services don't work on backend service. because of that i bypass the login page here.
+        // signup service don't work on backend service. just use login.
 
         if(user !== undefined) {
             if(!user.verified) {
                 navigate('LoginPage')
             } else {
                 popupRef.current?.open()
-                console.log("aaaa")
             }
         } else {
             navigate("LoginPage")
@@ -62,7 +62,10 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
     }
 
     const onTapPlaceOrder = () => {
-        
+
+        props.onCreateOrder(cart, user)
+        popupRef.current?.close()
+
     }
 
 
@@ -128,8 +131,18 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
         return(
             <View style={styles.container} >
                 <View style={styles.navigation} >
-                    <View style={styles.searchbar_container} >
-    
+                    <View style={styles.inside_container}>
+                            <Text style={styles.my_cart_text} >My Cart</Text>
+                        { user !== undefined && 
+                            <TouchableOpacity style={{alignItems: "center"}} 
+                            onPress= {() => {
+                                // go order details page
+                            }}
+                            >
+                                <Image source={require("../images/orders.png")} style={styles.order_icon} />
+                            </TouchableOpacity> 
+                        }
+                            
                     </View>
                 </View>
                 <View style={styles.body} >
@@ -156,8 +169,26 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
     } else {
 
         return(
-            <View style={styles.empty_cart_container} >
-                <Text style={styles.empty_text} >Your Cart is Empty ! ! !</Text>
+            <View style={styles.container}>
+                <View style={styles.navigation}> 
+                    <View style={styles.inside_container}>
+                        <Text style={styles.my_cart_text} >My Cart</Text>
+                    { user !== undefined && 
+                        <TouchableOpacity style={{alignItems: "center"}} 
+                        onPress= {() => {
+                            // go order details page
+                        }}
+                        >
+                            <Image source={require("../images/orders.png")} style={styles.order_icon} />
+                        </TouchableOpacity> 
+                    }
+                        
+                    </View>
+                </View>
+
+                    <View style={styles.body}>
+                        <Text style={styles.empty_text} >Your Cart is Empty</Text>
+                    </View>
             </View>
         )
     }
@@ -173,13 +204,15 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 20,
     },
-    searchbar_container: {
+    inside_container: {
         display: "flex",
         height: 60,
-        justifyContent: "space-around",
+        justifyContent: "space-between",
         flexDirection: "row",
         alignItems: "center",
-        marginLeft: 4
+        marginLeft: 4,
+        paddingLeft: 20,
+        paddingRight: 20,
     },
     body: {
         flex: 9,
@@ -194,7 +227,8 @@ const styles = StyleSheet.create({
     },
     empty_text: {
         fontSize: 25,
-        fontWeight: "700"
+        fontWeight: "700",
+        color: "black"
     },
     footer: {
         flex: 2,
@@ -271,6 +305,15 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "800",
         color: "#545252",
+    },
+    my_cart_text: {
+        fontSize: 18,
+        fontWeight: "700",
+        color: "black"
+    },
+    order_icon: {
+        width: 50,
+        height: 50,
     }
 })
 
