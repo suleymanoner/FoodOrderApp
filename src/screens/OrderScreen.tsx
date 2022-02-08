@@ -2,21 +2,23 @@ import React, { useState, useEffect, createRef } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { ApplicationState, FoodModel, ShoppingState, onUpdateCart, UserState, onCreateOrder } from '../redux';
-import { ButtonWithTitle, FoodCardInfo } from '../components'
+import { ButtonWithIcon, ButtonWithTitle, FoodCardInfo } from '../components'
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { checkExistence, useNavigation } from '../utils'
 import PaymentTypePopup from 'react-native-raw-bottom-sheet'
 
 
-interface CartScreenProps {
+interface OrderScreenProps {
     userReducer: UserState,
     shoppingReducer: ShoppingState,
     onUpdateCart: Function,
-    onCreateOrder: Function
+    onCreateOrder: Function,
+    navigation : { getParam: Function, goBack: Function }
 }
 
-const _CartScreen: React.FC<CartScreenProps> = (props) => {
+const _OrderScreen: React.FC<OrderScreenProps> = (props) => {
 
+    const { goBack } = props.navigation
     const { navigate } = useNavigation()
     const { cart, user, location, orders } = props.userReducer
     const [totalAmount, setTotalAmount] = useState(0)
@@ -46,122 +48,33 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
         setTotalAmount(total)
     }
 
-    const onValidateOrder = () => {
 
-        // signup service don't work on backend service. just use login.
-
-        if(user !== undefined) {
-            if(!user.verified) {
-                navigate('LoginPage')
-            } else {
-                popupRef.current?.open()
-            }
-        } else {
-            navigate("LoginPage")
-        }        
-    }
-
-    const onTapPlaceOrder = () => {
-
-        props.onCreateOrder(cart, user)
-        popupRef.current?.close()
-
-    }
-
-
-    const popupView = () => {
-
-        return(
-            <PaymentTypePopup
-                height={400}
-                ref={popupRef}
-                closeOnDragDown={true}
-                closeOnPressMask={false}
-                customStyles={{
-                    wrapper: { backgroundColor: "transparent" },
-                    draggableIcon: { backgroundColor: "#000" },
-                    container: {
-                        justifyContent: "flex-start",
-                        alignItems: "center"
-                    }
-                }}
-            >
-                <View style={styles.popup_container} >
-                    <View style={styles.payment_view} >
-                        <Text style={{fontSize: 20}}>Payable Amount</Text>
-                        <Text style={{fontSize: 20, fontWeight: "600"}}>{totalAmount.toFixed(2)} ₺</Text>
-                    </View>
-                    <View style={styles.payment_view_address_container} >
-                        <Image source={require('../images/delivery_icon.png')} style={{height:50, width: 50}} />
-                        <View  >
-                            <Text style={styles.delivery_address_title} >Address Used to Delivery</Text>
-                            <Text style={styles.delivery_address_text} >{location}</Text>
-                        </View>
-                    </View>
-
-                    <ScrollView horizontal={true} >
-                        <View style={styles.payment_options} >
-                            <TouchableOpacity 
-                                onPress={() => onTapPlaceOrder()}
-                                style={styles.options} 
-                            >
-                                <Image source={require('../images/cod_icon.png')} style={styles.icon} />
-                                <Text style={styles.icon_text} >Cash On Delivery</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity 
-                                onPress={() => {}}
-                                style={styles.options} 
-                            >
-                                <Image source={require('../images/card_icon.png')} style={styles.icon} />
-                                <Text style={styles.icon_text} >Card Payment</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </ScrollView>
-
-                </View>
-            </PaymentTypePopup>
-        )
-
-    }
-
-
-    if(cart.length > 0) {
+    if(orders.length > 0) {
 
         return(
             <View style={styles.container} >
                 <View style={styles.navigation} >
                     <View style={styles.inside_container}>
-                            <Text style={styles.my_cart_text} >My Cart</Text>
-                        { user.token !== undefined && 
-                            <TouchableOpacity style={{alignItems: "center"}} 
-                            onPress= {() => {
-                                navigate("OrderPage")
-                            }}
-                            >
-                                <Image source={require("../images/orders.png")} style={styles.order_icon} />
-                            </TouchableOpacity> 
-                        }
+
+                        <ButtonWithIcon width={50} height={50} onTap={() => goBack()} icon={require("../images/back_arrow.png")} />
+
+                        <Text style={styles.orders_text} >Orders</Text>
                             
                     </View>
                 </View>
                 <View style={styles.body} >
+                   { /*
                     <FlatList 
                     showsVerticalScrollIndicator={false}
                     data={cart}
                     renderItem={({item}) => <FoodCardInfo item={checkExistence(item, cart)} onTap={onTapFood} onUpdateCart={props.onUpdateCart} /> } 
                     keyExtractor={(item) => `${item._id}`} />
+                    */ }
                 </View>
 
                 <View style={styles.footer}>
-                    <View style={styles.amount_container} >
-                        <Text style={styles.total_text} >Total</Text>
-                        <Text style={styles.total_text} >{totalAmount} ₺</Text>
-                    </View>
-                    <ButtonWithTitle title={"Order Now"} onTap={onValidateOrder} height={50} width={320}/>
+                    
                 </View>
-
-                {popupView()}
 
             </View>
         )
@@ -172,14 +85,14 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
             <View style={styles.container}>
                 <View style={styles.navigation}> 
                     <View style={styles.inside_container}>
-                        <Text style={styles.my_cart_text} >My Cart</Text>
-                    { user.token !== undefined && 
+                        <Text style={styles.orders_text} >Orders</Text>
+                    { user !== undefined && 
                         <TouchableOpacity style={{alignItems: "center"}} 
                         onPress= {() => {
-                            navigate("OrderPage")
+                            // go order details page
                         }}
                         >
-                            <Image source={require("../images/orders.png")} style={styles.order_icon} />
+                            <Image source={require("../images/back_arrow.png")} style={styles.order_icon} />
                         </TouchableOpacity> 
                     }
                         
@@ -187,7 +100,7 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
                 </View>
 
                     <View style={styles.body}>
-                        <Text style={styles.empty_text} >Your Cart is Empty</Text>
+                        <Text style={styles.empty_text} >Your Order is Empty</Text>
                     </View>
             </View>
         )
@@ -207,7 +120,7 @@ const styles = StyleSheet.create({
     inside_container: {
         display: "flex",
         height: 60,
-        justifyContent: "space-between",
+        justifyContent: "flex-start",
         flexDirection: "row",
         alignItems: "center",
         marginLeft: 4,
@@ -306,8 +219,8 @@ const styles = StyleSheet.create({
         fontWeight: "800",
         color: "#545252",
     },
-    my_cart_text: {
-        fontSize: 18,
+    orders_text: {
+        fontSize: 22,
         fontWeight: "700",
         color: "black"
     },
@@ -322,6 +235,6 @@ const mapStateToProps = (state: ApplicationState) => ({
     userReducer: state.userReducer
 })
 
-const CartScreen = connect(mapStateToProps, { onUpdateCart, onCreateOrder })(_CartScreen)
+const OrderScreen = connect(mapStateToProps, { onUpdateCart, onCreateOrder })(_OrderScreen)
 
-export { CartScreen }
+export { OrderScreen }

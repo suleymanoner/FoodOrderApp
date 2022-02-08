@@ -12,6 +12,7 @@ import { RestaurantScreen } from './src/screens/RestaurantScreen';
 import { FoodDetailsScreen } from './src/screens/FoodDetailsScreen';
 import { CartScreen } from './src/screens/CartScreen';
 import { LoginScreen } from './src/screens/LoginScreen';
+import { OrderScreen } from './src/screens/OrderScreen';
 
 
 const switchNavigator = createSwitchNavigator({
@@ -62,7 +63,8 @@ const switchNavigator = createSwitchNavigator({
     Cart: {
       screen: createStackNavigator({
         CartPage: CartScreen,
-        LoginPage: LoginScreen
+        LoginPage: LoginScreen,
+        OrderPage: OrderScreen
       }, {
         defaultNavigationOptions: {
           headerShown: false
