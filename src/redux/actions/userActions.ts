@@ -30,7 +30,12 @@ export interface CreateOrderAction {
     payload: OrderModel
 }
 
-export type UserAction = UpdateLocationAction | UserErrorAction | UpdateCartAction | UserLoginAction | CreateOrderAction
+export interface ViewOrdersAction {
+    readonly type: "ON_VIEW_ORDER",
+    payload: [OrderModel]
+}
+
+export type UserAction = UpdateLocationAction | UserErrorAction | UpdateCartAction | UserLoginAction | CreateOrderAction | ViewOrdersAction
 
 
 export const onUpdateLocation = (location: string, postCode: string) => {
@@ -238,6 +243,38 @@ export const onCreateOrder = (cartItems: [FoodModel], user: UserModel) => {
             } else {
                 dispatch({
                     type: "ON_CREATE_ORDER",
+                    payload: response.data
+                })
+            }
+            
+        } catch (error) {
+            dispatch({
+                type: "ON_USER_ERROR",
+                payload: error
+            })
+        }
+    }
+}
+
+
+export const onGetOrders = (user: UserModel) => {
+    
+    return async (dispatch: Dispatch<UserAction>) => {
+
+        try {
+
+            axios.defaults.headers.common['Authorization'] = `Bearer ${user.token}`
+
+            const response = await axios.get<[OrderModel]>(`${BASE_URL}user/order`)
+
+            if(!response) {
+                dispatch({
+                    type: "ON_USER_ERROR",
+                    payload: "User Verification Error"
+                })
+            } else {
+                dispatch({
+                    type: "ON_VIEW_ORDER",
                     payload: response.data
                 })
             }

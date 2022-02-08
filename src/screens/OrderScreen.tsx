@@ -1,18 +1,14 @@
-import React, { useState, useEffect, createRef } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, Dimensions } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
-import { ApplicationState, FoodModel, ShoppingState, onUpdateCart, UserState, onCreateOrder } from '../redux';
-import { ButtonWithIcon, ButtonWithTitle, FoodCardInfo } from '../components'
-import { FlatList, ScrollView } from 'react-native-gesture-handler';
-import { checkExistence, useNavigation } from '../utils'
-import PaymentTypePopup from 'react-native-raw-bottom-sheet'
+import { ApplicationState, UserState, onGetOrders } from '../redux';
+import { ButtonWithIcon } from '../components'
+import { useNavigation } from '../utils'
 
 
 interface OrderScreenProps {
     userReducer: UserState,
-    shoppingReducer: ShoppingState,
-    onUpdateCart: Function,
-    onCreateOrder: Function,
+    onGetOrders: Function,
     navigation : { getParam: Function, goBack: Function }
 }
 
@@ -20,37 +16,16 @@ const _OrderScreen: React.FC<OrderScreenProps> = (props) => {
 
     const { goBack } = props.navigation
     const { navigate } = useNavigation()
-    const { cart, user, location, orders } = props.userReducer
-    const [totalAmount, setTotalAmount] = useState(0)
-    const popupRef = createRef<PaymentTypePopup>()
+    const { user, orders } = props.userReducer
 
-    const onTapFood = (item: FoodModel) => {
-        navigate('FoodDetailsPage', { food: item })
-    }
-
-    console.log(orders)
-
+    console.log(`Orders ${JSON.stringify(orders)}`)
 
     useEffect(() => {
-        onCalculateAmount()
-    }, [cart])
+        onGetOrders(user)
+    }, [])
 
 
-    const onCalculateAmount = () => {
-
-        let total = 0
-        if(Array.isArray(cart)){
-            cart.map(food => {
-                total += food.price * food.unit
-            })
-        }
-        
-        setTotalAmount(total)
-    }
-
-
-    if(orders.length > 0) {
-
+    const orderView = () => {
         return(
             <View style={styles.container} >
                 <View style={styles.navigation} >
@@ -78,24 +53,24 @@ const _OrderScreen: React.FC<OrderScreenProps> = (props) => {
 
             </View>
         )
+    }
+
+
+    if(orders.length > 0) {
+
+        return orderView()
 
     } else {
 
         return(
             <View style={styles.container}>
-                <View style={styles.navigation}> 
+                <View style={styles.navigation} >
                     <View style={styles.inside_container}>
+
+                        <ButtonWithIcon width={50} height={50} onTap={() => goBack()} icon={require("../images/back_arrow.png")} />
+
                         <Text style={styles.orders_text} >Orders</Text>
-                    { user !== undefined && 
-                        <TouchableOpacity style={{alignItems: "center"}} 
-                        onPress= {() => {
-                            // go order details page
-                        }}
-                        >
-                            <Image source={require("../images/back_arrow.png")} style={styles.order_icon} />
-                        </TouchableOpacity> 
-                    }
-                        
+                            
                     </View>
                 </View>
 
@@ -231,10 +206,9 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = (state: ApplicationState) => ({
-    shoppingReducer: state.shoppingReducer,
     userReducer: state.userReducer
 })
 
-const OrderScreen = connect(mapStateToProps, { onUpdateCart, onCreateOrder })(_OrderScreen)
+const OrderScreen = connect(mapStateToProps, { onGetOrders })(_OrderScreen)
 
 export { OrderScreen }

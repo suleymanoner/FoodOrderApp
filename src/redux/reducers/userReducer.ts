@@ -78,6 +78,12 @@ const UserReducer = (state: UserState = initialState, action: UserAction) => {
                 }
             }
 
+        case "ON_VIEW_ORDER":
+            return {
+                ...state,
+                orders: action.payload
+            }    
+            
             
         default:
             return state;
