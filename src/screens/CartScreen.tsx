@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
-import { ApplicationState, FoodModel, ShoppingState, onUpdateCart, UserState } from '../redux';
+import { ApplicationState, FoodModel, ShoppingState, onUpdateCart, UserState, onCreateOrder } from '../redux';
 import { ButtonWithTitle, FoodCardInfo } from '../components'
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { checkExistence, useNavigation } from '../utils'
@@ -17,13 +17,15 @@ interface CartScreenProps {
 const _CartScreen: React.FC<CartScreenProps> = (props) => {
 
     const { navigate } = useNavigation()
-    const { cart, user, location } = props.userReducer
+    const { cart, user, location, orders } = props.userReducer
     const [totalAmount, setTotalAmount] = useState(0)
     const popupRef = createRef<PaymentTypePopup>()
 
     const onTapFood = (item: FoodModel) => {
         navigate('FoodDetailsPage', { food: item })
     }
+
+    console.log(orders)
 
 
     useEffect(() => {
@@ -42,6 +44,27 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
         
         setTotalAmount(total)
     }
+
+    const onValidateOrder = () => {
+
+        // login and signup services don't work on backend service. because of that i bypass the login page here.
+
+        if(user !== undefined) {
+            if(!user.verified) {
+                navigate('LoginPage')
+            } else {
+                popupRef.current?.open()
+                console.log("aaaa")
+            }
+        } else {
+            navigate("LoginPage")
+        }        
+    }
+
+    const onTapPlaceOrder = () => {
+        
+    }
+
 
     const popupView = () => {
 
@@ -76,11 +99,19 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
                     <ScrollView horizontal={true} >
                         <View style={styles.payment_options} >
                             <TouchableOpacity 
+                                onPress={() => onTapPlaceOrder()}
+                                style={styles.options} 
+                            >
+                                <Image source={require('../images/cod_icon.png')} style={styles.icon} />
+                                <Text style={styles.icon_text} >Cash On Delivery</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity 
                                 onPress={() => {}}
                                 style={styles.options} 
                             >
-                                <Image source={require('../images/card_icon.png')} style={{height:50, width: 50}} />
-                                <Text>Cash On Delivery</Text>
+                                <Image source={require('../images/card_icon.png')} style={styles.icon} />
+                                <Text style={styles.icon_text} >Card Payment</Text>
                             </TouchableOpacity>
                         </View>
                     </ScrollView>
@@ -89,20 +120,6 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
             </PaymentTypePopup>
         )
 
-    }
-
-
-    const onValidateOrder = () => {
-
-        if(!user.verified) {
-            //navigate('LoginPage')
-            popupRef.current?.open()
-        } else {
-            // place order
-        }
-
-
-        
     }
 
 
@@ -230,7 +247,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
-        paddingLeft: 20
+        width: Dimensions.get("screen").width
     },
     options: {
         display: "flex",
@@ -245,6 +262,15 @@ const styles = StyleSheet.create({
         borderWidth: 0.2,
         borderRadius: 10,
         margin: 10,
+    },
+    icon: {
+        width: 115,
+        height: 80,
+    },
+    icon_text: {
+        fontSize: 16,
+        fontWeight: "800",
+        color: "#545252",
     }
 })
 
@@ -253,6 +279,6 @@ const mapStateToProps = (state: ApplicationState) => ({
     userReducer: state.userReducer
 })
 
-const CartScreen = connect(mapStateToProps, { onUpdateCart })(_CartScreen)
+const CartScreen = connect(mapStateToProps, { onUpdateCart, onCreateOrder })(_CartScreen)
 
 export { CartScreen }

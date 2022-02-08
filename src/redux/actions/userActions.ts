@@ -2,7 +2,7 @@ import axios from "axios";
 import { Dispatch } from "react";
 import { BASE_URL } from "../../utils";
 import AsyncStorage from "@react-native-community/async-storage";
-import { FoodModel, UserModel } from "..";
+import { FoodModel, UserModel, OrderModel } from "../models";
 
 export interface UpdateLocationAction {
     readonly type: "ON_UPDATE_LOCATION",
@@ -25,7 +25,12 @@ export interface UserLoginAction {
     payload: UserModel
 }
 
-export type UserAction = UpdateLocationAction | UserErrorAction | UpdateCartAction | UserLoginAction
+export interface CreateOrderAction {
+    readonly type: "ON_CREATE_ORDER",
+    payload: OrderModel
+}
+
+export type UserAction = UpdateLocationAction | UserErrorAction | UpdateCartAction | UserLoginAction | CreateOrderAction
 
 
 export const onUpdateLocation = (location: string, postCode: string) => {
@@ -75,6 +80,13 @@ export const onUserLogin = (email: string, password: string) => {
                 password
             })
 
+            // I added here because 'verified' value return undefined even we entered correct credentials.
+            if(response.data.token) {
+                response.data.verified = true
+            }
+
+            console.log(response.data.verified)
+
             if(!response) {
                 dispatch({
                     type: "ON_USER_ERROR",
@@ -96,17 +108,20 @@ export const onUserLogin = (email: string, password: string) => {
     }
 }
 
-
+// signup doesn't work now. maybe because of backend issues.
 export const onUserSignUp = (email: string, phone: string, password: string) => {
 
     return async (dispatch: Dispatch<UserAction>) => {
-
+        console.log(email)
         try {
+            console.log(phone)
             const response = await axios.post<UserModel>(`${BASE_URL}user/signup`, {
                 email,
                 phone,
                 password
             })
+            console.log(password)
+            console.log(response.data)
 
             if(!response) {
                 dispatch({
@@ -182,6 +197,47 @@ export const onOTPRequest = (user: UserModel) => {
             } else {
                 dispatch({
                     type: "ON_USER_LOGIN",
+                    payload: response.data
+                })
+            }
+            
+        } catch (error) {
+            dispatch({
+                type: "ON_USER_ERROR",
+                payload: error
+            })
+        }
+    }
+}
+
+
+export const onCreateOrder = (cartItems: [FoodModel], user: UserModel) => {
+
+    let cart = new Array()
+
+    cartItems.map(item => {
+        cart.push({_id: item._id, unit: item.unit})
+    })
+
+    
+    return async (dispatch: Dispatch<UserAction>) => {
+
+        try {
+
+            axios.defaults.headers.common['Authorization'] = `Bearer ${user.token}`
+
+            const response = await axios.post<OrderModel>(`${BASE_URL}user/create-order` , {
+                cart
+            })
+
+            if(!response) {
+                dispatch({
+                    type: "ON_USER_ERROR",
+                    payload: "User Verification Error"
+                })
+            } else {
+                dispatch({
+                    type: "ON_CREATE_ORDER",
                     payload: response.data
                 })
             }
