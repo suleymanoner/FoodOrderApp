@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, FlatList, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { ApplicationState, UserState, onGetOrders } from '../redux';
-import { ButtonWithIcon } from '../components'
+import { ButtonWithIcon, OrderCard } from '../components'
 import { useNavigation } from '../utils'
 
 
@@ -33,18 +33,19 @@ const _OrderScreen: React.FC<OrderScreenProps> = (props) => {
 
                         <ButtonWithIcon width={50} height={50} onTap={() => goBack()} icon={require("../images/back_arrow.png")} />
 
-                        <Text style={styles.orders_text} >Orders</Text>
+                        <Text style={styles.orders_text}>Orders</Text>
                             
                     </View>
                 </View>
                 <View style={styles.body} >
-                   { /*
+                   
                     <FlatList 
                     showsVerticalScrollIndicator={false}
-                    data={cart}
-                    renderItem={({item}) => <FoodCardInfo item={checkExistence(item, cart)} onTap={onTapFood} onUpdateCart={props.onUpdateCart} /> } 
+                    data={orders}
+                    renderItem={({item}) => 
+                    <OrderCard item={item} onTap={()=> {Alert.alert("Order selected!")}} /> } 
                     keyExtractor={(item) => `${item._id}`} />
-                    */ }
+                    
                 </View>
 
                 <View style={styles.footer}>
