@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
         color: "#545252",
     },
     my_cart_text: {
-        fontSize: 18,
+        fontSize: 22,
         fontWeight: "700",
         color: "black"
     },

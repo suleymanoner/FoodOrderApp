@@ -68,7 +68,7 @@ const _OrderScreen: React.FC<OrderScreenProps> = (props) => {
                 <View style={styles.navigation} >
                     <View style={styles.inside_container}>
 
-                        <ButtonWithIcon width={50} height={50} onTap={() => goBack()} icon={require("../images/back_arrow.png")} />
+                        <ButtonWithIcon width={42} height={42} onTap={() => goBack()} icon={require("../images/back_arrow.png")} />
 
                         <Text style={styles.orders_text} >Orders</Text>
                             

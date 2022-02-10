@@ -44,7 +44,7 @@ const _HomeScreen: React.FC<HomeProps> = (props) => {
             <View style={styles.navigation} >
                 <View style={styles.navigation_inner_container} >
                     <Text>{location}</Text>
-                    <Text>Edit</Text>
+                    <Text style={{color: "rgba(246,80,0,255)", fontSize: 20, paddingLeft: 10}} >Edit</Text>
                 </View>
                 <View style={styles.search_bar_container} >
                     <SearchBar 

@@ -58,10 +58,12 @@ const _LoginScreen: React.FC<LoginProps> = ({ onUserLogin, onUserSignUp, userRed
     }
 
     const onTapAuthenticate = () => {
+        const edittedEmail = email.split(" ").join("")
+
         if(isSignup) {
-            onUserSignUp(email, phone, password)
+            onUserSignUp(edittedEmail, phone, password)
         } else {
-            onUserLogin(email, password)
+            onUserLogin(edittedEmail, password)
         }
     }
 

@@ -31,7 +31,7 @@ const UserReducer = (state: UserState = initialState, action: UserAction) => {
                     cart: [action.payload]
                 }
             }
-
+            
             const existingFoods = state.cart.filter(item => item._id === action.payload._id)
 
             if(existingFoods.length > 0) {
@@ -69,6 +69,7 @@ const UserReducer = (state: UserState = initialState, action: UserAction) => {
                     ...state,
                     cart: [],
                     orders: [action.payload]
+                    
                 }
             } else {
                 return {

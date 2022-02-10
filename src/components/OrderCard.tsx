@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { OrderModel } from '../redux';
+import moment from 'moment'
 
 interface OrderCardProps {
     item: OrderModel,
@@ -37,8 +38,8 @@ const OrderCard : React.FC<OrderCardProps> = ({ item, onTap }) => {
             <View style={styles.inside_container} >
                 <View style={styles.order_container} >
                     <Text style={styles.order_text} >Order ID: {item.orderID}</Text>
-                    <Text style={styles.order_date_text} >{item.orderDate}</Text>
-                    <Text style={styles.order_amount_text} >{item.totalAmount}</Text>
+                    <Text style={styles.order_date_text} >{moment(item.orderDate).format("Do MMM YY, h:mm a") }</Text>
+                    <Text style={styles.order_amount_text} >{item.totalAmount} ₺</Text>
                 </View>
                 {orderStatus()}
             </View>
@@ -78,6 +79,7 @@ const styles = StyleSheet.create({
     order_text: {
         fontSize: 22,
         fontWeight: "500",
+        color: "black"
     },
     order_date_text: {
         fontSize: 16,
@@ -85,9 +87,9 @@ const styles = StyleSheet.create({
         color: "#7C7C7C"
     },
     order_amount_text: {
-        fontSize: 20,
-        fontWeight: "500",
-        color: "#7C7C7C"
+        fontSize: 25,
+        fontWeight: "700",
+        color: "rgba(246,80,0,255)"
     },
     status_container: {
         display: "flex",
