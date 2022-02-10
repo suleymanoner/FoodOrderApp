@@ -6,11 +6,12 @@ import { FoodModel } from '../redux';
 interface FoodCardProps {
     item: FoodModel,
     onTap: Function,
-    onUpdateCart: Function
+    onUpdateCart: Function,
+    unit?: number | undefined
 }
 
 
-const FoodCard: React.FC<FoodCardProps> = ({ item, onTap, onUpdateCart }) => {
+const FoodCard: React.FC<FoodCardProps> = ({ item, onTap, onUpdateCart, unit }) => {
 
     const didUpdateCart = (unit: number) => {
 
@@ -31,17 +32,22 @@ const FoodCard: React.FC<FoodCardProps> = ({ item, onTap, onUpdateCart }) => {
                 </View>
                 <View style={styles.price_container} >
                     <Text style={styles.price_text} >{item.price} ₺</Text>
-                    <ButtonAddRemove 
-                    unit={item.unit}
-                    onAdd={() => {
-                        let unit = isNaN(item.unit) ? 0 : item.unit
-                        didUpdateCart(unit + 1)
-                    }} 
+                    { unit !== undefined ?
+                        <Text style={styles.quantity_text} >Qty: {unit}</Text> :
 
-                    onRemove={() => {
-                        let unit = isNaN(item.unit) ? 0 : item.unit
-                        didUpdateCart(unit > 0 ? unit - 1 : unit)
-                    }} />
+                        <ButtonAddRemove 
+                        unit={item.unit}  
+                        onAdd={() => {
+                            let unit = isNaN(item.unit) ? 0 : item.unit
+                            didUpdateCart(unit + 1)
+                        }} 
+
+                        onRemove={() => {
+                            let unit = isNaN(item.unit) ? 0 : item.unit
+                            didUpdateCart(unit > 0 ? unit - 1 : unit)
+                        }} />
+                        }
+                    
                 </View>
             </TouchableOpacity>
         </View>
@@ -91,6 +97,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "600",
         color: "#7C7C7C"
+    },
+    quantity_text: {
+        fontSize: 18,
+        fontWeight: "700",
+        color: "black"
     }
 })
 

@@ -2,90 +2,56 @@ import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, FlatList, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { ApplicationState, UserState, onGetOrders, OrderModel } from '../redux';
-import { ButtonWithIcon, OrderCard } from '../components'
+import { ButtonWithIcon, FoodCard, OrderCard } from '../components'
 import { useNavigation } from '../utils'
 
 
-interface OrderScreenProps {
+interface OrderDetailScreenProps {
     userReducer: UserState,
-    onGetOrders: Function,
     navigation : { getParam: Function, goBack: Function }
 }
 
-const _OrderScreen: React.FC<OrderScreenProps> = (props) => {
+const _OrderDetailScreen: React.FC<OrderDetailScreenProps> = (props) => {
 
-    const { goBack } = props.navigation
+    const { goBack, getParam } = props.navigation
     const { navigate } = useNavigation()
-    const { user, orders } = props.userReducer
+    const { user } = props.userReducer
 
-    console.log(`Orders ${JSON.stringify(orders)}`)
-
-    useEffect(() => {
-        onGetOrders(user)
-    }, [])
+    const order = getParam("order") as OrderModel
 
 
-    const onTapOrder = (order: OrderModel) => {
-        navigate("OrderDetailPage", { order })
-    }
+    return(
+        <View style={styles.container} >
+            <View style={styles.navigation} >
+                <View style={styles.inside_container}>
 
+                    <ButtonWithIcon width={50} height={50} onTap={() => goBack()} icon={require("../images/back_arrow.png")} />
 
-    const orderView = () => {
-        return(
-            <View style={styles.container} >
-                <View style={styles.navigation} >
-                    <View style={styles.inside_container}>
-
-                        <ButtonWithIcon width={50} height={50} onTap={() => goBack()} icon={require("../images/back_arrow.png")} />
-
-                        <Text style={styles.orders_text}>Orders</Text>
-                            
-                    </View>
+                    <Text style={styles.orders_text}>Order ID: {order.orderID}</Text>
+                        
                 </View>
-                <View style={styles.body} >
-                   
-                    <FlatList 
-                    showsVerticalScrollIndicator={false}
-                    data={orders}
-                    renderItem={({item}) => 
-                    <OrderCard item={item} onTap={()=> onTapOrder(item)} /> } 
-                    keyExtractor={(item) => `${item._id}`} />
-                    
-                </View>
-
-                <View style={styles.footer}>
-                    
-                </View>
-
             </View>
-        )
-    }
-
-
-    if(orders.length > 0) {
-
-        return orderView()
-
-    } else {
-
-        return(
-            <View style={styles.container}>
-                <View style={styles.navigation} >
-                    <View style={styles.inside_container}>
-
-                        <ButtonWithIcon width={42} height={42} onTap={() => goBack()} icon={require("../images/back_arrow.png")} />
-
-                        <Text style={styles.orders_text} >Orders</Text>
-                            
-                    </View>
-                </View>
-
-                    <View style={styles.body}>
-                        <Text style={styles.empty_text} >Your Order is Empty</Text>
-                    </View>
+            <View style={styles.body} >
+               
+                <FlatList 
+                showsVerticalScrollIndicator={false}
+                data={order.items}
+                renderItem={({item}) => 
+                <FoodCard item={item.food} onTap={()=> {}} onUpdateCart={() => {}} unit={item.unit} /> } 
+                keyExtractor={(item) => `${item._id}`} />
+                
             </View>
-        )
-    }
+
+            <View style={styles.footer}>
+                
+            </View>
+
+        </View>
+    )
+
+    
+        
+    
 
 }
 
@@ -215,6 +181,6 @@ const mapStateToProps = (state: ApplicationState) => ({
     userReducer: state.userReducer
 })
 
-const OrderScreen = connect(mapStateToProps, { onGetOrders })(_OrderScreen)
+const OrderDetailScreen = connect(mapStateToProps, { onGetOrders })(_OrderDetailScreen)
 
-export { OrderScreen }
+export { OrderDetailScreen }
