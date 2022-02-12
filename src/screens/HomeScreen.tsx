@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { ButtonWithIcon, CategoryCard, RestaurantCard, SearchBar } from '../components';
 import { onAvailability, onSearchFoods, UserState, ApplicationState, ShoppingState, Restaurant, FoodModel } from '../redux'
 import { useNavigation } from '../utils'
+import AsyncStorage from "@react-native-community/async-storage";
 
 interface HomeProps {
     userReducer: UserState,
@@ -15,17 +16,26 @@ interface HomeProps {
 
 const _HomeScreen: React.FC<HomeProps> = (props) => {
 
-    const { location, postCode } = props.userReducer
+    //const { location, postCode } = props.userReducer
     const { availability } = props.shoppingReducer
     const { categories, foods, restaurants } = availability
- 
+    const [address, setAddress] = useState("Address")
     const { navigate } = useNavigation()
 
+    const locationFromStorage = AsyncStorage.getItem("user_location")
+    const postcodeFromStorage = AsyncStorage.getItem("user_location_postcode")
+
+    locationFromStorage.then(location => {
+            if(location !== null) {
+                setAddress(location)
+            }
+        })
+
     useEffect(() => {
-        props.onAvailability(postCode)
+        props.onAvailability(postcodeFromStorage)
 
         setTimeout(() => {
-            props.onSearchFoods(postCode)
+            props.onSearchFoods(postcodeFromStorage)
         }, 1000);
 
     }, [])
@@ -43,7 +53,7 @@ const _HomeScreen: React.FC<HomeProps> = (props) => {
         <View style={styles.container} >
             <View style={styles.navigation} >
                 <View style={styles.navigation_inner_container} >
-                    <Text>{location}</Text>
+                    <Text>{address}</Text>
                     <Text style={{color: "rgba(246,80,0,255)", fontSize: 20, paddingLeft: 10}} >Edit</Text>
                 </View>
                 <View style={styles.search_bar_container} >

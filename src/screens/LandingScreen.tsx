@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity, Alert } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import opencage from 'opencage-api-client';
 import { connect } from 'react-redux';
 import { onUpdateLocation, UserState, ApplicationState } from '../redux'
 import { useNavigation } from '../utils'
+import AsyncStorage from "@react-native-community/async-storage";
 
 const screenWidth = Dimensions.get('screen').width
 
@@ -18,17 +19,26 @@ interface LandingProps {
 const _LandingScreen: React.FC<LandingProps> = ({ userReducer,  onUpdateLocation }) => {
 
     const { navigate } = useNavigation()
-
     const [lat, setLat] = useState<number>()
     const [long, setLong] = useState<number>()
     const [address, setAddress] = useState("Click here for current address")
 
     useEffect(() => {
+        
+        const locationFromStorage = AsyncStorage.getItem("user_location")
+
+        locationFromStorage.then(location => {
+            if(location !== null) {
+                navigate("HomePage")
+            }
+        })
+
         Geolocation.getCurrentPosition(data => {
             setLat(data.coords.latitude)
             setLong(data.coords.longitude)
-        })
+        }) 
     }, [])
+
 
 
     function getLocation() {
