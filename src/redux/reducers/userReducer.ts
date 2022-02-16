@@ -80,6 +80,7 @@ const UserReducer = (state: UserState = initialState, action: UserAction) => {
             }
 
         case "ON_VIEW_ORDER":
+        case "ON_CANCEL_ORDER":
             return {
                 ...state,
                 orders: action.payload

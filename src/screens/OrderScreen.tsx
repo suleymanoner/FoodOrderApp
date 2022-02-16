@@ -21,7 +21,7 @@ const _OrderScreen: React.FC<OrderScreenProps> = (props) => {
     console.log(`Orders ${JSON.stringify(orders)}`)
 
     useEffect(() => {
-        onGetOrders(user)
+        props.onGetOrders(user)
     }, [])
 
 

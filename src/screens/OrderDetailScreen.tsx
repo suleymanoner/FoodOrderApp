@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Alert } from 'react-native';
 import { connect } from 'react-redux';
-import { ApplicationState, UserState, onGetOrders, OrderModel } from '../redux';
+import { ApplicationState, UserState, OrderModel, onCancelOrder } from '../redux';
 import { ButtonWithIcon, ButtonWithTitle, FoodCard, OrderCard } from '../components'
 import { useNavigation } from '../utils'
 import moment from "moment"
@@ -9,13 +9,13 @@ import moment from "moment"
 
 interface OrderDetailScreenProps {
     userReducer: UserState,
+    onCancelOrder: Function,
     navigation : { getParam: Function, goBack: Function }
 }
 
 const _OrderDetailScreen: React.FC<OrderDetailScreenProps> = (props) => {
 
     const { goBack, getParam } = props.navigation
-    const { navigate } = useNavigation()
     const { user } = props.userReducer
     const order = getParam("order") as OrderModel
 
@@ -28,7 +28,8 @@ const _OrderDetailScreen: React.FC<OrderDetailScreenProps> = (props) => {
             [
                 { text: "No" , onPress: () => {}, style: "cancel" },
                 { text: "Yes", onPress: () => {
-                    // cancel order
+                    props.onCancelOrder(order, user)
+                    goBack()
                 }}
             ]
         )
@@ -169,6 +170,6 @@ const mapStateToProps = (state: ApplicationState) => ({
     userReducer: state.userReducer
 })
 
-const OrderDetailScreen = connect(mapStateToProps, { onGetOrders })(_OrderDetailScreen)
+const OrderDetailScreen = connect(mapStateToProps, { onCancelOrder })(_OrderDetailScreen)
 
 export { OrderDetailScreen }

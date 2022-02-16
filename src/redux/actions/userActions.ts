@@ -31,9 +31,10 @@ export interface CreateOrderAction {
 }
 
 export interface ViewOrdersAction {
-    readonly type: "ON_VIEW_ORDER",
+    readonly type: "ON_VIEW_ORDER" | "ON_CANCEL_ORDER",
     payload: [OrderModel]
 }
+
 
 export type UserAction = UpdateLocationAction | UserErrorAction | UpdateCartAction | UserLoginAction | CreateOrderAction | ViewOrdersAction
 
@@ -275,6 +276,38 @@ export const onGetOrders = (user: UserModel) => {
             } else {
                 dispatch({
                     type: "ON_VIEW_ORDER",
+                    payload: response.data
+                })
+            }
+            
+        } catch (error) {
+            dispatch({
+                type: "ON_USER_ERROR",
+                payload: error
+            })
+        }
+    }
+}
+
+
+export const onCancelOrder = (order: OrderModel, user: UserModel) => {
+    
+    return async (dispatch: Dispatch<UserAction>) => {
+
+        try {
+
+            axios.defaults.headers.common['Authorization'] = `Bearer ${user.token}`
+
+            const response = await axios.delete<[OrderModel]>(`${BASE_URL}user/order/${order._id}`)
+
+            if(!response) {
+                dispatch({
+                    type: "ON_USER_ERROR",
+                    payload: "User Verification Error"
+                })
+            } else {
+                dispatch({
+                    type: "ON_CANCEL_ORDER",
                     payload: response.data
                 })
             }
