@@ -14,6 +14,7 @@ import { CartScreen } from './src/screens/CartScreen';
 import { LoginScreen } from './src/screens/LoginScreen';
 import { OrderScreen } from './src/screens/OrderScreen';
 import { OrderDetailScreen } from './src/screens/OrderDetailScreen';
+import { AccountScreen } from './src/screens/AccountScreen';
 
 
 const switchNavigator = createSwitchNavigator({
@@ -82,8 +83,12 @@ const switchNavigator = createSwitchNavigator({
 
     Account: {
       screen: createStackNavigator({
-        AccountPage: HomeScreen,
+        AccountPage: AccountScreen,
         LoginPage: LoginScreen
+      }, {
+        defaultNavigationOptions: {
+          headerShown: false
+        }
       }),
       navigationOptions: {
         tabBarIcon: ({focused, tintColor}) => {

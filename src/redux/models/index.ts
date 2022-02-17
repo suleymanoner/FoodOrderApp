@@ -32,6 +32,8 @@ export interface FoodAvailability {
 }
 
 export interface UserModel {
+    firstName: string,
+    lastName: string,
     email: string,
     token: string,
     verified: boolean
