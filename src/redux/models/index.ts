@@ -50,7 +50,8 @@ export interface UserState {
 
 export interface ShoppingState {
     availability: FoodAvailability,
-    availableFoods: [FoodModel]
+    availableFoods: [FoodModel],
+    offers: [OfferModel]
 }
 
 export interface CartModel {
@@ -68,4 +69,23 @@ export interface OrderModel {
     paidThrough: string,
     paymentResponse: string,
     orderStatus: string
+}
+
+export interface OfferModel {
+    _id: string,
+    offerType: string,
+    vendors: [any],
+    images: [string],
+    title: string,
+    description: string,
+    minValue: number,
+    offerAmount: number,
+    offerPercentage: number,
+    startValidity: Date,
+    endValidity: Date,
+    promoCode: string,
+    promoType: string,
+    bank: [any],
+    bin: [any],
+    pincode: string
 }
