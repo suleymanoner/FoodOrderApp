@@ -72,7 +72,8 @@ const switchNavigator = createSwitchNavigator({
         CartPage: CartScreen,
         LoginPage: LoginScreen,
         OrderPage: OrderScreen,
-        OrderDetailPage: OrderDetailScreen
+        OrderDetailPage: OrderDetailScreen,
+        CartOfferPage: OfferScreen
       }, {
         defaultNavigationOptions: {
           headerShown: false

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { ApplicationState, ShoppingState, UserState, onGetOffers, OfferModel, onApplyOffer } from '../redux';
@@ -13,6 +13,7 @@ interface OfferScreenProps {
     shoppingReducer: ShoppingState,
     onGetOffers: Function,
     onApplyOffer: Function
+    navigation: { getParam: Function, goBack: Function, isFirstRouteInParent: Function  }
 }
 
 const _OfferScreen: React.FC<OfferScreenProps> = (props) => {
@@ -20,13 +21,23 @@ const _OfferScreen: React.FC<OfferScreenProps> = (props) => {
     const { navigate } = useNavigation()
     const { offers } = props.shoppingReducer
     const { cart, appliedOffer } = props.userReducer
+    const [showBackButton, setShowBackButton] = useState(true)
+    const { getParam, goBack, isFirstRouteInParent } = props.navigation
     const postcodeFromStorage = AsyncStorage.getItem("user_location_postcode")
 
+    // CHECK LATER
+    //console.log(isFirstRouteInParent())
+    /*
+    if(isFirstRouteInParent()) {
+        setShowBackButton(true)
+        console.log("DOESNT EXIST")
+    } else {
+        console.log("IT EXISTS")
+        setShowBackButton(false)
+    }*/
 
     useEffect(() => {
         props.onGetOffers(postcodeFromStorage)
-        console.log(offers)
-        console.log(postcodeFromStorage)
     }, [])
 
     const showAlert = (title: string, msg: string) => {
@@ -79,9 +90,14 @@ const _OfferScreen: React.FC<OfferScreenProps> = (props) => {
     return(
         <View style={styles.container} >
             <View style={styles.navigation} >
-            <View style={styles.inside_container}>
+                {showBackButton ? 
+                    <ButtonWithIcon icon={require('../images/back_arrow.png')} onTap={() => goBack()} width={42} height={42}/>
+                    :
+                    <Text>a</Text>
+                }
+            
                 <Text style={styles.offers_text}>Offers & Deals</Text>
-            </View>
+            
             </View>
             <View style={styles.body} >
 
@@ -113,11 +129,14 @@ const styles = StyleSheet.create({
     navigation: {
         flex: 1,
         marginTop: 43,
+        paddingLeft: 10,
+        flexDirection: "row",
+        alignItems: "center", 
     },
     inside_container: {
         display: "flex",
         height: 60,
-        justifyContent: "center",
+        justifyContent: "space-around",
         flexDirection: "row",
         alignItems: "center",
         marginLeft: 4
@@ -130,7 +149,12 @@ const styles = StyleSheet.create({
     offers_text: {
         fontSize: 22,
         fontWeight: "700",
-        color: "black"
+        color: "black",
+        marginLeft: 80
+    },
+    icon: {
+        height: 30,
+        width: 30
     }
 })
 

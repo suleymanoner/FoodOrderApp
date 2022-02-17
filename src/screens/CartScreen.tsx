@@ -18,16 +18,13 @@ interface CartScreenProps {
 const _CartScreen: React.FC<CartScreenProps> = (props) => {
 
     const { navigate } = useNavigation()
-    const { cart, user, location, orders } = props.userReducer
+    const { cart, user, location, orders, appliedOffer } = props.userReducer
     const [totalAmount, setTotalAmount] = useState(0)
     const popupRef = createRef<PaymentTypePopup>()
 
     const onTapFood = (item: FoodModel) => {
         navigate('FoodDetailsPage', { food: item })
     }
-
-    console.log(orders)
-
 
     useEffect(() => {
         onCalculateAmount()
@@ -65,7 +62,26 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
 
         props.onCreateOrder(cart, user)
         popupRef.current?.close()
+    }
 
+    const footerContent = () => {
+        return(
+            <View style={styles.footer_content_container} >
+                <TouchableOpacity style={[styles.footer_content_button, {height: 80}]}
+                onPress={() => navigate("CartOfferPage")}
+                >  
+                    <View style={{flex: 1}}>
+                        <Text style={styles.offer_title_text} >Offers & Deals</Text>
+                        {appliedOffer._id !== undefined ?
+                            <View style={{flex:1}} ><Text style={styles.offer_text} >{appliedOffer.offerPercentage} % of Discount</Text></View>
+                            :
+                            <View><Text>You can apply available Offers.</Text></View>
+                        }
+                    </View>
+                    <Image source={require("../images/arrow_icon.png")} style={styles.order_icon} />
+                </TouchableOpacity>
+            </View>
+        )
     }
 
 
@@ -150,7 +166,8 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
                     showsVerticalScrollIndicator={false}
                     data={cart}
                     renderItem={({item}) => <FoodCardInfo item={checkExistence(item, cart)} onTap={onTapFood} onUpdateCart={props.onUpdateCart} /> } 
-                    keyExtractor={(item) => `${item._id}`} />
+                    keyExtractor={(item) => `${item._id}`} 
+                    ListFooterComponent={footerContent} />
                 </View>
 
                 <View style={styles.footer}>
@@ -158,7 +175,7 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
                         <Text style={styles.total_text} >Total</Text>
                         <Text style={styles.total_text} >{totalAmount} ₺</Text>
                     </View>
-                    <ButtonWithTitle title={"Order Now"} onTap={onValidateOrder} height={50} width={320}/>
+                    <ButtonWithTitle title={"Make Payment"} onTap={onValidateOrder} height={50} width={320}/>
                 </View>
 
                 {popupView()}
@@ -215,9 +232,9 @@ const styles = StyleSheet.create({
         paddingRight: 20,
     },
     body: {
-        flex: 9,
+        flex: 11,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
     },
     empty_cart_container: {
         flex: 1,
@@ -253,7 +270,7 @@ const styles = StyleSheet.create({
     payment_view: {
         flexDirection: "row",
         justifyContent: "space-around",
-        padding: 10,
+        padding: 5,
         margin: 5,
         backgroundColor: "#E3BE74",
     },
@@ -314,6 +331,34 @@ const styles = StyleSheet.create({
     order_icon: {
         width: 50,
         height: 50,
+    },
+    footer_content_container: {
+        flex: 1,
+        display: "flex",
+
+    },
+    footer_content_button: {
+        display: "flex",
+        justifyContent: "space-around",
+        flexDirection: "row",
+        backgroundColor: "white",
+        alignItems: "center",
+        padding: 10,
+        borderColor: "#d3d3dd3",
+        borderWidth: 1,
+        marginLeft: 10,
+        marginRight: 10,
+        borderRadius: 10,
+    },
+    offer_title_text: {
+        fontSize: 18,
+        fontWeight: "600",
+        color: "black"
+    },
+    offer_text: {
+        fontSize: 13,
+        fontWeight: "600",
+        color: "#3d933f"
     }
 })
 
