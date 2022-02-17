@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
-import { ApplicationState, ShoppingState, UserState, onGetOffers } from '../redux';
-import { ButtonWithIcon, FoodCard } from '../components'
+import { ApplicationState, ShoppingState, UserState, onGetOffers, OfferModel } from '../redux';
+import { ButtonWithIcon, FoodCard, OfferCard } from '../components'
 import { FlatList } from 'react-native-gesture-handler';
 import { useNavigation } from '../utils'
 import AsyncStorage from "@react-native-community/async-storage";
@@ -27,7 +27,19 @@ const _OfferScreen: React.FC<OfferScreenProps> = (props) => {
         console.log(postcodeFromStorage)
     }, [])
 
-    console.log(offers)
+
+    const onTapApplyOffer = (item: OfferModel) => {
+
+
+    }
+
+    const onTapRemoveOffer = (item: OfferModel) => {
+
+
+    }
+
+
+    
 
     return(
         <View style={styles.container} >
@@ -43,8 +55,13 @@ const _OfferScreen: React.FC<OfferScreenProps> = (props) => {
                 <FlatList 
                 showsVerticalScrollIndicator={false}
                 data={offers} 
-                renderItem={({item}) => <Text>{item}</Text> }
-                keyExtractor={(item) => `${item._id}`} />
+                renderItem={({item}) => 
+                <OfferCard item={item} 
+                onTapApply={onTapApplyOffer}
+                onTapRemove={onTapRemoveOffer}
+                isApplied={false}
+                /> }
+                keyExtractor={(item) => `${item._id}`} />  
                 
                 }
 
