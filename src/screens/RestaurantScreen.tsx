@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
         fontSize: 22,
         fontWeight: "600",
         marginLeft: 80,
+        color: "black"
     },
     image_background: {
         width: Dimensions.get('screen').width,

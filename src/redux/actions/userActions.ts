@@ -2,7 +2,7 @@ import axios from "axios";
 import { Dispatch } from "react";
 import { BASE_URL } from "../../utils";
 import AsyncStorage from "@react-native-community/async-storage";
-import { FoodModel, UserModel, OrderModel } from "../models";
+import { FoodModel, UserModel, OrderModel, OfferModel } from "../models";
 
 export interface UpdateLocationAction {
     readonly type: "ON_UPDATE_LOCATION",
@@ -39,8 +39,21 @@ export interface UserLogoutAction {
     readonly type: "ON_USER_LOGOUT"
 }
 
+export interface AddRemoveOfferAction {
+    readonly type: "ON_ADD_OFFER" | "ON_REMOVE_OFFER",
+    payload: OfferModel
+}
 
-export type UserAction = UpdateLocationAction | UserErrorAction | UpdateCartAction | UserLoginAction | CreateOrderAction | ViewOrdersAction | UserLogoutAction
+
+export type UserAction = 
+UpdateLocationAction | 
+UserErrorAction | 
+UpdateCartAction | 
+UserLoginAction | 
+CreateOrderAction | 
+ViewOrdersAction | 
+UserLogoutAction |
+AddRemoveOfferAction
 
 
 export const onUpdateLocation = (location: string, postCode: string) => {
@@ -342,5 +355,28 @@ export const onUserLogout = () => {
                 payload: error
             })
         }
+    }
+}
+
+
+export const onApplyOffer = (offer: OfferModel, isRemove: boolean) => {
+
+    return async (dispatch: Dispatch<UserAction>) => {
+
+        if(isRemove) {
+            dispatch({
+                type: "ON_REMOVE_OFFER",
+                payload: offer
+            })
+        } else {
+            dispatch({
+                type: "ON_ADD_OFFER",
+                payload: offer
+            })
+        }
+
+
+        
+
     }
 }

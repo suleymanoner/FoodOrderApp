@@ -170,7 +170,8 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     title: {
-        fontSize: 30
+        fontSize: 30,
+        color: "black"
     },
     image: {
         width: 120,

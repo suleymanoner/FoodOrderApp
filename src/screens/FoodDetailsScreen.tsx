@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
         fontSize: 22,
         fontWeight: "600",
         marginLeft: 40,
+        color: "black"
     },
     body: {
         flex: 10,

@@ -1,5 +1,5 @@
 import { UserAction } from "../actions"
-import { FoodModel, UserModel, UserState, OrderModel } from "../models"
+import { FoodModel, UserModel, UserState, OrderModel, OfferModel } from "../models"
 
 
 const initialState: UserState = {
@@ -9,6 +9,7 @@ const initialState: UserState = {
     error: undefined,
     cart: {} as [FoodModel],
     orders: {} as [OrderModel],
+    appliedOffer: {} as OfferModel
 }
 
 
@@ -90,8 +91,19 @@ const UserReducer = (state: UserState = initialState, action: UserAction) => {
             return {
                 ...state,
                 orders: action.payload
+            }
+
+        case "ON_ADD_OFFER":
+            return {
+                ...state,
+                appliedOffer: action.payload
+            }
+        
+        case "ON_REMOVE_OFFER":
+            return {
+                ...state,
+                appliedOffer: {}
             }    
-            
             
         default:
             return state;

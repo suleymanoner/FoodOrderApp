@@ -45,7 +45,8 @@ export interface UserState {
     postCode: string,
     error: string | undefined,
     cart: [FoodModel],
-    orders: [OrderModel]
+    orders: [OrderModel],
+    appliedOffer: OfferModel
 }
 
 export interface ShoppingState {
