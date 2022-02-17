@@ -51,7 +51,7 @@ const _AccountScreen: React.FC<AccountScreenProps> = (props) => {
     }
 
 
-    if(user !== undefined) {
+    if(user.token !== undefined) {
 
         return(
             <View style={styles.container} >

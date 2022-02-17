@@ -15,6 +15,7 @@ import { LoginScreen } from './src/screens/LoginScreen';
 import { OrderScreen } from './src/screens/OrderScreen';
 import { OrderDetailScreen } from './src/screens/OrderDetailScreen';
 import { AccountScreen } from './src/screens/AccountScreen';
+import { OfferScreen } from './src/screens/OfferScreen';
 
 
 const switchNavigator = createSwitchNavigator({
@@ -52,7 +53,11 @@ const switchNavigator = createSwitchNavigator({
 
     Offer: {
       screen: createStackNavigator({
-        OfferPage: HomeScreen
+        OfferPage: OfferScreen
+      }, {
+        defaultNavigationOptions: {
+          headerShown: false
+        }
       }),
       navigationOptions: {
         tabBarIcon: ({focused, tintColor}) => {

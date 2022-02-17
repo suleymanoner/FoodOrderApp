@@ -34,7 +34,7 @@ const _LoginScreen: React.FC<LoginProps> = ({ onUserLogin, onUserSignUp, userRed
 
     useEffect(() => {
 
-        if(user !== undefined) {
+        if(user.token !== undefined) {
             if(user.verified === true) {
                 navigate('CartPage')
             } else {
