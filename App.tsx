@@ -84,7 +84,9 @@ const switchNavigator = createSwitchNavigator({
     Account: {
       screen: createStackNavigator({
         AccountPage: AccountScreen,
-        LoginPage: LoginScreen
+        LoginPage: LoginScreen,
+        AccountOrderPage: OrderScreen,
+        OrderDetailPage: OrderDetailScreen
       }, {
         defaultNavigationOptions: {
           headerShown: false

@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, Alert } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
 import { connect } from 'react-redux';
-import { ApplicationState, FoodModel, ShoppingState, onUpdateCart, UserState, onCreateOrder } from '../redux';
-import { ButtonWithTitle, FoodCardInfo } from '../components'
+import { ApplicationState, UserState, onUserLogout } from '../redux';
 import { useNavigation } from '../utils'
 import { LoginScreen } from './LoginScreen';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -10,18 +9,13 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 interface AccountScreenProps {
     userReducer: UserState,
+    onUserLogout: Function
 }
 
 const _AccountScreen: React.FC<AccountScreenProps> = (props) => {
 
     const { navigate } = useNavigation()
-    const { user, location, orders } = props.userReducer
-    
-
-    useEffect(() => {
-        
-    }, [])
-
+    const { user, location } = props.userReducer
 
     const options = [
         {
@@ -30,7 +24,9 @@ const _AccountScreen: React.FC<AccountScreenProps> = (props) => {
         },
         {
             title: "View Orders",
-            action: () => {Alert.alert("View Orders")}
+            action: () => {
+                navigate("AccountOrderPage")
+            }
         },
         {
             title: "Contact Support",
@@ -38,7 +34,10 @@ const _AccountScreen: React.FC<AccountScreenProps> = (props) => {
         },
         {
             title: "Logout",
-            action: () => {Alert.alert("Logout")}
+            action: () => {
+                props.onUserLogout()
+                console.log(user)
+            }
         }
     ]
 
@@ -52,8 +51,7 @@ const _AccountScreen: React.FC<AccountScreenProps> = (props) => {
     }
 
 
-
-    if(user.token !== undefined) {
+    if(user !== undefined) {
 
         return(
             <View style={styles.container} >
@@ -77,13 +75,9 @@ const _AccountScreen: React.FC<AccountScreenProps> = (props) => {
                     </ScrollView>
                    
                 </View>
-
-
             </View>
         )
-
     } else {
-
         return(
             <LoginScreen />
         )
@@ -156,10 +150,9 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = (state: ApplicationState) => ({
-    shoppingReducer: state.shoppingReducer,
     userReducer: state.userReducer
 })
 
-const AccountScreen = connect(mapStateToProps, { onUpdateCart, onCreateOrder })(_AccountScreen)
+const AccountScreen = connect(mapStateToProps, { onUserLogout })(_AccountScreen)
 
 export { AccountScreen }

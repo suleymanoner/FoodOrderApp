@@ -62,6 +62,12 @@ const UserReducer = (state: UserState = initialState, action: UserAction) => {
                 user: action.payload
             }
 
+        case "ON_USER_LOGOUT":
+            return {
+                ...state,
+                user: {} as UserModel
+            }    
+
         case "ON_CREATE_ORDER":
 
             if(!Array.isArray(state.orders)) {

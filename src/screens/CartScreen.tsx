@@ -173,7 +173,7 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
                 <View style={styles.navigation}> 
                     <View style={styles.inside_container}>
                         <Text style={styles.my_cart_text} >My Cart</Text>
-                    { user.token !== undefined && 
+                    { user !== undefined && 
                         <TouchableOpacity style={{alignItems: "center"}} 
                         onPress= {() => {
                             navigate("OrderPage")

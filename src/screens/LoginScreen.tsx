@@ -30,14 +30,11 @@ const _LoginScreen: React.FC<LoginProps> = ({ onUserLogin, onUserSignUp, userRed
     const { user } = userReducer
     const { navigate } = useNavigation()
 
-
-
     let countDown: NodeJS.Timer
 
     useEffect(() => {
 
-        if(user.verified !== undefined) {
-
+        if(user !== undefined) {
             if(user.verified === true) {
                 navigate('CartPage')
             } else {
