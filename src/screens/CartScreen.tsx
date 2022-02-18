@@ -24,7 +24,6 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
     const [totalTax, setTotalTax] = useState(0)
     const [payableAmount, setPayableAmount] = useState(0)
     const [discount, setDiscount] = useState(0)
-    
     const popupRef = createRef<PaymentTypePopup>()
 
     const onTapFood = (item: FoodModel) => {
@@ -58,7 +57,12 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
         if(appliedOffer._id !== undefined) {
 
             if(total >= appliedOffer.minValue) {
-                
+
+                const discount = (total / 100) * appliedOffer.offerPercentage
+                setDiscount(discount)
+                const afterDiscount = (total - discount)
+                setPayableAmount(afterDiscount)
+
             } else {
                 showAlert("The applied Offer is not Applicable!",
                 `This offer is applicable with mininum ${appliedOffer.minValue} only! Please select another offer.`,
@@ -85,9 +89,9 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
     }
 
     const onTapPlaceOrder = () => {
-
         props.onCreateOrder(cart, user)
-        popupRef.current?.close()
+        popupRef.current?.close(),
+        props.onApplyOffer(appliedOffer, true)
     }
 
     const footerContent = () => {
@@ -106,6 +110,31 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
                     </View>
                     <Image source={require("../images/arrow_icon.png")} style={styles.order_icon} />
                 </TouchableOpacity>
+
+                <View style={[styles.footer_content_button, {height: 250, justifyContent: "flex-start", alignItems: "flex-start", flexDirection: "column"}]} >
+                    <Text style={[styles.offer_title_text, {flex: 1}]} >Bill Details</Text>
+                    <View style={styles.footer_total_amount} >
+                        <Text style={{ flex: 1, color: "black", fontSize: 14}} >Total</Text>
+                        <Text style={{color: "black", fontSize: 16}} >{totalAmount.toFixed(0)} ₺</Text>
+                    </View> 
+                    <View style={styles.footer_total_amount} >
+                        <Text style={{ flex: 1, color: "black", fontSize: 14}} >Tax & Deliver Charge</Text>
+                        <Text style={{color: "black", fontSize: 16}} >{totalTax.toFixed(0)} ₺</Text>
+                    </View>
+
+                    {appliedOffer._id !== undefined && 
+                    <View style={styles.footer_total_amount} >
+                        <Text style={{ flex: 1, color: "black", fontSize: 14}} >Discount (applied {appliedOffer.offerPercentage} % Offer) </Text>
+                        <Text style={{color: "black", fontSize: 16}} >{discount.toFixed(0)} ₺</Text>
+                    </View>
+                    }
+                    
+                    <View style={styles.footer_total_amount} >
+                        <Text style={{ flex: 1, color: "black", fontSize: 14}} >Net Payable</Text>
+                        <Text style={{color: "black", fontSize: 16}} >{payableAmount.toFixed(0)} ₺</Text>
+                    </View>
+                </View>
+                
             </View>
         )
     }
@@ -131,7 +160,7 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
                 <View style={styles.popup_container} >
                     <View style={styles.payment_view} >
                         <Text style={{fontSize: 20}}>Payable Amount</Text>
-                        <Text style={{fontSize: 20, fontWeight: "600"}}>{totalAmount.toFixed(2)} ₺</Text>
+                        <Text style={{fontSize: 20, fontWeight: "600"}}>{payableAmount.toFixed(0)} ₺</Text>
                     </View>
                     <View style={styles.payment_view_address_container} >
                         <Image source={require('../images/delivery_icon.png')} style={{height:50, width: 50}} />
@@ -199,7 +228,7 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
                 <View style={styles.footer}>
                     <View style={styles.amount_container} >
                         <Text style={styles.total_text} >Total</Text>
-                        <Text style={styles.total_text} >{totalAmount} ₺</Text>
+                        <Text style={styles.total_text} >{payableAmount} ₺</Text>
                     </View>
                     <ButtonWithTitle title={"Make Payment"} onTap={onValidateOrder} height={50} width={320}/>
                 </View>
@@ -285,7 +314,8 @@ const styles = StyleSheet.create({
         paddingLeft: 20
     },
     total_text: {
-        fontSize: 18
+        fontSize: 18,
+        color: "black"
     },
     popup_container: {
         display: "flex",
@@ -375,16 +405,26 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         marginRight: 10,
         borderRadius: 10,
+        marginBottom: 15
     },
     offer_title_text: {
         fontSize: 18,
         fontWeight: "600",
-        color: "black"
+        color: "black",
     },
     offer_text: {
         fontSize: 13,
         fontWeight: "600",
         color: "#3d933f"
+    },
+    footer_total_amount: {
+        flex: 1,
+        display: "flex",
+        flexDirection: "row",
+        marginTop: 10,
+        justifyContent: "space-around",
+        paddingLeft: 10,
+        paddingRight: 10,
     }
 })
 
