@@ -1,10 +1,10 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
-import { ApplicationState, FoodModel, ShoppingState, onUpdateCart, UserState, onCreateOrder } from '../redux';
+import { ApplicationState, FoodModel, ShoppingState, onUpdateCart, UserState, onCreateOrder, onApplyOffer } from '../redux';
 import { ButtonWithTitle, FoodCardInfo } from '../components'
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
-import { checkExistence, useNavigation } from '../utils'
+import { checkExistence, useNavigation, showAlert } from '../utils'
 import PaymentTypePopup from 'react-native-raw-bottom-sheet'
 
 
@@ -12,14 +12,19 @@ interface CartScreenProps {
     userReducer: UserState,
     shoppingReducer: ShoppingState,
     onUpdateCart: Function,
-    onCreateOrder: Function
+    onCreateOrder: Function,
+    onApplyOffer: Function
 }
 
 const _CartScreen: React.FC<CartScreenProps> = (props) => {
 
     const { navigate } = useNavigation()
-    const { cart, user, location, orders, appliedOffer } = props.userReducer
+    const { cart, user, location, appliedOffer } = props.userReducer
     const [totalAmount, setTotalAmount] = useState(0)
+    const [totalTax, setTotalTax] = useState(0)
+    const [payableAmount, setPayableAmount] = useState(0)
+    const [discount, setDiscount] = useState(0)
+    
     const popupRef = createRef<PaymentTypePopup>()
 
     const onTapFood = (item: FoodModel) => {
@@ -39,7 +44,28 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
                 total += food.price * food.unit
             })
         }
-        
+
+        const tax = (total / 100 * 0.9) + 40
+
+        if(total > 0) {
+            setTotalTax(tax)
+        }
+
+        setTotalAmount(total)
+        setPayableAmount(total)
+        setDiscount(0)
+
+        if(appliedOffer._id !== undefined) {
+
+            if(total >= appliedOffer.minValue) {
+                
+            } else {
+                showAlert("The applied Offer is not Applicable!",
+                `This offer is applicable with mininum ${appliedOffer.minValue} only! Please select another offer.`,
+                props.onApplyOffer(appliedOffer, true))
+            }
+        }
+
         setTotalAmount(total)
     }
 
@@ -367,6 +393,6 @@ const mapStateToProps = (state: ApplicationState) => ({
     userReducer: state.userReducer
 })
 
-const CartScreen = connect(mapStateToProps, { onUpdateCart, onCreateOrder })(_CartScreen)
+const CartScreen = connect(mapStateToProps, { onUpdateCart, onCreateOrder, onApplyOffer })(_CartScreen)
 
 export { CartScreen }

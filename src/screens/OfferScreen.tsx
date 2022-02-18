@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { ApplicationState, ShoppingState, UserState, onGetOffers, OfferModel, onApplyOffer } from '../redux';
 import { ButtonWithIcon, FoodCard, OfferCard } from '../components'
 import { FlatList } from 'react-native-gesture-handler';
-import { useNavigation } from '../utils'
+import { useNavigation, showAlert } from '../utils'
 import AsyncStorage from "@react-native-community/async-storage";
 
 
@@ -39,17 +39,6 @@ const _OfferScreen: React.FC<OfferScreenProps> = (props) => {
     useEffect(() => {
         props.onGetOffers(postcodeFromStorage)
     }, [])
-
-    const showAlert = (title: string, msg: string) => {
-
-        Alert.alert(
-            title,
-            msg,
-            [
-                {text: "OK", onPress: () => {}}
-            ]
-        )
-    }
 
 
     const onTapApplyOffer = (offer: OfferModel) => {
