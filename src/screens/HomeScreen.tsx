@@ -16,7 +16,7 @@ interface HomeProps {
 
 const _HomeScreen: React.FC<HomeProps> = (props) => {
 
-    //const { location, postCode } = props.userReducer
+    const { location, postCode } = props.userReducer
     const { availability } = props.shoppingReducer
     const { categories, foods, restaurants } = availability
     const [address, setAddress] = useState("Address")
@@ -25,17 +25,11 @@ const _HomeScreen: React.FC<HomeProps> = (props) => {
     const locationFromStorage = AsyncStorage.getItem("user_location")
     const postcodeFromStorage = AsyncStorage.getItem("user_location_postcode")
 
-    locationFromStorage.then(location => {
-            if(location !== null) {
-                setAddress(location)
-            }
-        })
-
     useEffect(() => {
-        props.onAvailability(postcodeFromStorage)
+        props.onAvailability(postCode)
 
         setTimeout(() => {
-            props.onSearchFoods(postcodeFromStorage)
+            props.onSearchFoods(postCode)
         }, 1000);
 
     }, [])

@@ -20,10 +20,9 @@ const _OfferScreen: React.FC<OfferScreenProps> = (props) => {
 
     const { navigate } = useNavigation()
     const { offers } = props.shoppingReducer
-    const { cart, appliedOffer } = props.userReducer
+    const { cart, appliedOffer, location, postCode } = props.userReducer
     const [showBackButton, setShowBackButton] = useState(true)
     const { getParam, goBack, isFirstRouteInParent } = props.navigation
-    const postcodeFromStorage = AsyncStorage.getItem("user_location_postcode")
 
     // CHECK LATER
     //console.log(isFirstRouteInParent())
@@ -37,7 +36,7 @@ const _OfferScreen: React.FC<OfferScreenProps> = (props) => {
     }*/
 
     useEffect(() => {
-        props.onGetOffers(postcodeFromStorage)
+        props.onGetOffers(postCode)
     }, [])
 
 

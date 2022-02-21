@@ -4,7 +4,7 @@ import Geolocation from '@react-native-community/geolocation';
 import opencage from 'opencage-api-client';
 import { connect } from 'react-redux';
 import { onUpdateLocation, UserState, ApplicationState } from '../redux'
-import { useNavigation } from '../utils'
+import { showAlert, useNavigation } from '../utils'
 import AsyncStorage from "@react-native-community/async-storage";
 
 const screenWidth = Dimensions.get('screen').width
@@ -23,36 +23,62 @@ const _LandingScreen: React.FC<LandingProps> = ({ userReducer,  onUpdateLocation
     const [long, setLong] = useState<number>()
     const [address, setAddress] = useState("Click here for current address")
 
-    useEffect(() => {
-        
-        const locationFromStorage = AsyncStorage.getItem("user_location")
+    const goLocationScreen:Function = () => {
+        navigate("LocationPage")
+    }
 
-        locationFromStorage.then(location => {
-            if(location !== null) {
-                navigate("HomePage")
+    /*
+    const locationFromStorage = AsyncStorage.getItem("user_location")
+            console.log(locationFromStorage)
+
+            if(locationFromStorage !== null) {
+                locationFromStorage.then(location => {
+                    if(location !== null) {
+                        navigate("HomePage")
+                    }
+                })
+            } else {
+                
             }
-        })
+    */ 
 
-        Geolocation.getCurrentPosition(data => {
-            setLat(data.coords.latitude)
-            setLong(data.coords.longitude)
-        }) 
+    const getDeviceLocation = async() => {
+
+        try {
+            Geolocation.getCurrentPosition(data => {
+                setLat(data.coords.latitude)
+                setLong(data.coords.longitude)
+            })
+            
+        } catch (error) {
+            console.log(error, "Location Error !")
+            showAlert("Location Permission Needed!", "Location Permission needed to access your nearest restaurants!", goLocationScreen())
+        }
+    }
+
+
+    useEffect(() => {
+        getDeviceLocation()
     }, [])
-
 
 
     function getLocation() {
 
         const key = "9c7704b06ab64272a3fc91d27796a202"
 
-        opencage.geocode({key, q: `${lat},${long}`}).then(response => {
-            setAddress(response.results[0].formatted)
-            onUpdateLocation(response.results[0].formatted, response.results[0].components.postcode)
-        })
+        if(lat !== undefined && long !== undefined) {
+            opencage.geocode({key, q: `${lat},${long}`}).then(response => {
+                setAddress(response.results[0].formatted)
+                onUpdateLocation(response.results[0].formatted, response.results[0].components.postcode)
+            })
 
-        setTimeout(() => {
-            navigate('homeStack')
-        }, 2000)
+            setTimeout(() => {
+                navigate('homeStack')
+            }, 2000)
+        } else {
+            showAlert("Location Permission Needed!", "Location Permission needed to access your nearest restaurants!", goLocationScreen())
+        }
+
     }
     
 

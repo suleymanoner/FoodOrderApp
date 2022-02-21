@@ -16,13 +16,15 @@ import { OrderScreen } from './src/screens/OrderScreen';
 import { OrderDetailScreen } from './src/screens/OrderDetailScreen';
 import { AccountScreen } from './src/screens/AccountScreen';
 import { OfferScreen } from './src/screens/OfferScreen';
+import { LocationScreen } from './src/screens/LocationScreen';
 
 
 const switchNavigator = createSwitchNavigator({
 
   landingStack: {
     screen: createStackNavigator({
-      Landing: LandingScreen
+      Landing: LandingScreen,
+      LocationPage: LocationScreen
     }, {
       defaultNavigationOptions: {
         headerShown: false
