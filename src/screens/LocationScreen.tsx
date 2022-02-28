@@ -6,7 +6,8 @@ import { connect } from 'react-redux';
 import { onUpdateLocation, UserState, ApplicationState } from '../redux'
 import { showAlert, useNavigation } from '../utils'
 import AsyncStorage from "@react-native-community/async-storage";
-import { ButtonWithIcon } from '../components';
+import { ButtonWithIcon, TextField } from '../components';
+import { TextInput } from 'react-native-gesture-handler';
 
 const screenWidth = Dimensions.get('screen').width
 
@@ -20,57 +21,7 @@ interface LocationScreenProps {
 const _LocationScreen: React.FC<LocationScreenProps> = ({ userReducer,  onUpdateLocation }) => {
 
     const { navigate } = useNavigation()
-    const [lat, setLat] = useState<number>()
-    const [long, setLong] = useState<number>()
-    const [address, setAddress] = useState("Click here for current address")
     const [isMap, setIsMap] = useState(false)
-
-
-    const getDeviceLocation = async() => {
-
-        try {
-
-            const locationFromStorage = AsyncStorage.getItem("user_location")
-
-            if(locationFromStorage !== null) {
-                locationFromStorage.then(location => {
-                    if(location !== null) {
-                        navigate("HomePage")
-                    }
-                })
-            } else {
-                Geolocation.getCurrentPosition(data => {
-                    setLat(data.coords.latitude)
-                    setLong(data.coords.longitude)
-                }) 
-            }
-            
-        } catch (error) {
-            console.log(error, "Location Error !")
-            showAlert("Location Permission Needed!", "Location Permission needed to access your nearest restaurants!")
-        }
-    }
-
-/*
-    useEffect(() => {
-        getDeviceLocation()
-    }, [])
-
-
-    function getLocation() {
-
-        const key = "9c7704b06ab64272a3fc91d27796a202"
-
-        opencage.geocode({key, q: `${lat},${long}`}).then(response => {
-            setAddress(response.results[0].formatted)
-            onUpdateLocation(response.results[0].formatted, response.results[0].components.postcode)
-        })
-
-        setTimeout(() => {
-            navigate('homeStack')
-        }, 2000)
-    }
-    */
 
 
     const pickLocationView = () => {
@@ -83,6 +34,7 @@ const _LocationScreen: React.FC<LocationScreenProps> = ({ userReducer,  onUpdate
                     <View style={styles.input_container} >
                         
                     </View>
+                    
                 </View>
 
                 <View style={styles.center_message}>
@@ -142,7 +94,7 @@ const styles = StyleSheet.create({
     },
     center_message: {
         left: "50%",
-        top: "50%",
+        top: "50%",  
         position: "absolute",
         marginLeft: -65,
         marginTop: -50
@@ -178,6 +130,17 @@ const styles = StyleSheet.create({
     input_container: {
         display: "flex",
         flex: 1,
-        marginRight: 5
+        marginRight: 5,
+        alignItems: "center"
+    },
+    address_text_title: {
+        marginTop: 30,
+        fontSize: 20,
+        color: "black",
+    },
+    address_text: {
+        marginTop: 30,
+        fontSize: 15,
+        color: "black",
     }
 })

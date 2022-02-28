@@ -27,6 +27,7 @@ const _HomeScreen: React.FC<HomeProps> = (props) => {
 
     useEffect(() => {
         props.onAvailability(postCode)
+        setAddress(location)
 
         setTimeout(() => {
             props.onSearchFoods(postCode)
