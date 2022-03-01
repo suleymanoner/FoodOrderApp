@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native';
-import Geolocation from '@react-native-community/geolocation';
-import opencage from 'opencage-api-client';
 import { connect } from 'react-redux';
 import { onUpdateLocation, UserState, ApplicationState } from '../redux'
 import { showAlert, useNavigation } from '../utils'
-import AsyncStorage from "@react-native-community/async-storage";
-import { ButtonWithIcon, TextField } from '../components';
-import { TextInput } from 'react-native-gesture-handler';
+import { ButtonWithIcon, ButtonWithTitle } from '../components';
+import { LocationPick } from '../components/LocationPick';
+import { Point } from 'react-native-google-places-autocomplete';
 
 const screenWidth = Dimensions.get('screen').width
 
@@ -17,11 +15,41 @@ interface LocationScreenProps {
     onUpdateLocation: Function
 }
 
+interface Region {
+    latitude: number,
+    longitude: number,
+    latitudeDelta: number,
+    longitudeDelta: number
+}
+
 
 const _LocationScreen: React.FC<LocationScreenProps> = ({ userReducer,  onUpdateLocation }) => {
 
     const { navigate } = useNavigation()
     const [isMap, setIsMap] = useState(false)
+    const [region, setRegion] = useState<Region>({
+        latitude: 38.496769,
+        longitude: 27.705259,
+        latitudeDelta: 38.496769,
+        longitudeDelta: 27.705259
+    })
+
+
+    const onChangeLocation = (location: Point) => {
+        setIsMap(true)
+        console.log(location);
+
+        setRegion({
+            latitude: location.lat,
+            longitude: location.lng,
+            latitudeDelta: 38.496769,
+            longitudeDelta: 27.705259
+        })
+    }
+
+    const onTapConfirmLocation = () => {
+        console.log("confirmed");
+    }
 
 
     const pickLocationView = () => {
@@ -32,7 +60,7 @@ const _LocationScreen: React.FC<LocationScreenProps> = ({ userReducer,  onUpdate
                 <View style={styles.pick_location_inside_container} >
                     <ButtonWithIcon icon={require("../images/back_arrow.png")} onTap={() => navigate("HomePage")} width={40} height={50} />
                     <View style={styles.input_container} >
-                        
+                        <LocationPick onChangeLocation={onChangeLocation} />
                     </View>
                     
                 </View>
@@ -51,17 +79,35 @@ const _LocationScreen: React.FC<LocationScreenProps> = ({ userReducer,  onUpdate
 
         return(
             <View style={styles.container} >
-                <Text>Pick location</Text>
+                <View style={styles.navigation} >
+                    <View style={styles.map_view_container} >
+                        <ButtonWithIcon icon={require('../images/back_arrow.png')} height={50} width={40} onTap={() => navigate('HomePage')} />
+                        <View style={styles.text_container} >
+                            <Text style={styles.pick_text} >Pick Your Location From Map</Text>
+                        </View>
+                    </View>
+                </View>
+                <View style={styles.body} >
+                    <Text>map here</Text>
+                </View>
+                <View style={styles.footer} >
+                    <View style={styles.confirm_container} >
+                        <Text style={styles.your_address_text} >Your Current Selected Address</Text>
+                        <ButtonWithTitle title='Confirm' onTap={onTapConfirmLocation} width={320} height={50} />
+                    </View>
+                </View>
             </View>
         )
 
     }
 
+    /*
     if(isMap) {
         return mapView()
     } else {
         return pickLocationView()
-    }
+    }*/
+    return mapView()
 
 
 }
@@ -80,17 +126,18 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "rgba(242,242,242,1)"
     },
-    addressContainer: {
-        width: screenWidth - 100,
-        borderBottomColor: "red",
-        borderBottomWidth: 0.5,
-        padding: 5,
-        alignItems: "center",
-        marginBottom: 10,
-    },
     navigation: {
         flex: 2,
-        
+        marginTop: 44
+    },
+    body: {
+        flex: 7,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    footer: {
+        flex: 2,
+        padding: 10,
     },
     center_message: {
         left: "50%",
@@ -98,9 +145,6 @@ const styles = StyleSheet.create({
         position: "absolute",
         marginLeft: -65,
         marginTop: -50
-    },
-    footer: {
-        flex: 2,
     },
     deliveryIcon: {
         width: 120,
@@ -111,13 +155,6 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         color: "black",
         marginLeft: -25
-    },
-    addressCurrent: {
-        fontSize: 18,
-        fontWeight: "200",
-        color: "rgba(228,93,46,255)",
-        width: screenWidth - 100,
-        textAlign: "center"
     },
     pick_location_inside_container:{
         flex: 1,
@@ -131,16 +168,35 @@ const styles = StyleSheet.create({
         display: "flex",
         flex: 1,
         marginRight: 5,
-        alignItems: "center"
     },
-    address_text_title: {
-        marginTop: 30,
-        fontSize: 20,
-        color: "black",
+    map_view_container: {
+        display: "flex",
+        height: 60,
+        justifyContent: "flex-start",
+        flexDirection: "row",
+        alignItems: "center",
+        marginLeft: 5,
+        paddingLeft: 10
     },
-    address_text: {
-        marginTop: 30,
+    text_container: {
+        flex: 1,
+        marginLeft: 20
+    },
+    pick_text: {
+        fontSize: 18,
+        fontWeight: "700",
+        color: "black"
+    },
+    confirm_container:{
+        flex: 1,
+        padding: 10,
+        backgroundColor: "white",
+        paddingLeft: 20,
+        paddingRight: 20
+    },
+    your_address_text: {
         fontSize: 15,
-        color: "black",
+        fontWeight: "600",
+        color: "black"
     }
 })

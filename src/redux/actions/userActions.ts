@@ -134,17 +134,13 @@ export const onUserLogin = (email: string, password: string) => {
 // signup doesn't work now. maybe because of backend issues.
 export const onUserSignUp = (email: string, phone: string, password: string) => {
 
-    return async (dispatch: Dispatch<UserAction>) => {
-        console.log(email)
+    return async (dispatch: Dispatch<UserAction>) => {        
         try {
-            console.log(phone)
-            const response = await axios.post<UserModel>(`${BASE_URL}user/signup`, {
+            const response = await axios.post<UserModel>(`${BASE_URL}user/create-account`, {
                 email,
                 phone,
                 password
             })
-            console.log(password)
-            console.log(response.data)
 
             if(!response) {
                 dispatch({
