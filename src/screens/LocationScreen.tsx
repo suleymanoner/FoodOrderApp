@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { onUpdateLocation, UserState, ApplicationState } from '../redux'
+import { Region } from '../redux/models'
 import { showAlert, useNavigation } from '../utils'
-import { ButtonWithIcon, ButtonWithTitle } from '../components';
-import { LocationPick } from '../components/LocationPick';
+import { ButtonWithIcon, ButtonWithTitle, LocationPick, LocationPickMap } from '../components';
 import { Point } from 'react-native-google-places-autocomplete';
 
 const screenWidth = Dimensions.get('screen').width
@@ -15,12 +15,7 @@ interface LocationScreenProps {
     onUpdateLocation: Function
 }
 
-interface Region {
-    latitude: number,
-    longitude: number,
-    latitudeDelta: number,
-    longitudeDelta: number
-}
+
 
 
 const _LocationScreen: React.FC<LocationScreenProps> = ({ userReducer,  onUpdateLocation }) => {
@@ -34,7 +29,7 @@ const _LocationScreen: React.FC<LocationScreenProps> = ({ userReducer,  onUpdate
         longitudeDelta: 27.705259
     })
 
-
+    
     const onChangeLocation = (location: Point) => {
         setIsMap(true)
         console.log(location);
@@ -45,6 +40,13 @@ const _LocationScreen: React.FC<LocationScreenProps> = ({ userReducer,  onUpdate
             latitudeDelta: 38.496769,
             longitudeDelta: 27.705259
         })
+    }
+
+    const onPickLocationFromMap = (newRegion: Region  ) => {
+        setRegion(newRegion)
+        console.log(newRegion);
+
+        // then get with geolocation and use opencage then show address to user
     }
 
     const onTapConfirmLocation = () => {
@@ -88,7 +90,7 @@ const _LocationScreen: React.FC<LocationScreenProps> = ({ userReducer,  onUpdate
                     </View>
                 </View>
                 <View style={styles.body} >
-                    <Text>map here</Text>
+                    <LocationPickMap lastLocation={region} onMarkerChanged={onPickLocationFromMap} />
                 </View>
                 <View style={styles.footer} >
                     <View style={styles.confirm_container} >
@@ -101,14 +103,12 @@ const _LocationScreen: React.FC<LocationScreenProps> = ({ userReducer,  onUpdate
 
     }
 
-    /*
+    
     if(isMap) {
         return mapView()
     } else {
         return pickLocationView()
-    }*/
-    return mapView()
-
+    }
 
 }
 
@@ -127,13 +127,12 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(242,242,242,1)"
     },
     navigation: {
-        flex: 2,
+        flex: 1,
         marginTop: 44
     },
     body: {
         flex: 7,
-        justifyContent: "center",
-        alignItems: "center"
+        display: "flex"
     },
     footer: {
         flex: 2,
