@@ -1,8 +1,8 @@
 import axios from "axios";
 import { Dispatch } from "react";
-import { BASE_URL } from "../../utils";
+import { BASE_URL, MAP_API_KEY } from "../../utils";
 import AsyncStorage from "@react-native-community/async-storage";
-import { FoodModel, UserModel, OrderModel, OfferModel } from "../models";
+import { FoodModel, UserModel, OrderModel, OfferModel, PickedLocationResult, PickedAddress } from "../models";
 
 export interface UpdateLocationAction {
     readonly type: "ON_UPDATE_LOCATION",
@@ -44,6 +44,11 @@ export interface AddRemoveOfferAction {
     payload: OfferModel
 }
 
+export interface OnFetchLocationAction {
+    readonly type: "ON_FETCH_LOCATION",
+    payload: PickedAddress
+}
+
 
 export type UserAction = 
 UpdateLocationAction | 
@@ -53,7 +58,8 @@ UserLoginAction |
 CreateOrderAction | 
 ViewOrdersAction | 
 UserLogoutAction |
-AddRemoveOfferAction
+AddRemoveOfferAction | 
+OnFetchLocationAction
 
 
 export const onUpdateLocation = (location: string, postCode: string) => {
@@ -131,7 +137,7 @@ export const onUserLogin = (email: string, password: string) => {
     }
 }
 
-// signup doesn't work now. maybe because of backend issues.
+
 export const onUserSignUp = (email: string, phone: string, password: string) => {
 
     return async (dispatch: Dispatch<UserAction>) => {        
@@ -374,5 +380,42 @@ export const onApplyOffer = (offer: OfferModel, isRemove: boolean) => {
 
         
 
+    }
+}
+
+
+
+export const onFetchLocation = (lat: string, lng: string) => {
+
+    return async (dispatch: Dispatch<UserAction>) => {
+
+        try {
+            const response = await axios.get<PickedLocationResult>(`https://maps.googleapis.com/maps/api/geocode/json?address=${lat},${lng}&key=${MAP_API_KEY}`)
+
+            if(!response) {
+                dispatch({
+                    type: "ON_USER_ERROR",
+                    payload: "Address Fetching Error"
+                })
+            } else {
+                
+                const { results } = response.data
+
+                if(Array.isArray(results) && results.length > 0) {
+                    const pickedAddress = results[0]
+                    dispatch({
+                        type: "ON_FETCH_LOCATION",
+                        payload: pickedAddress
+                    })
+                }
+
+            }
+            
+        } catch (error) {
+            dispatch({
+                type: "ON_USER_ERROR",
+                payload: error
+            })
+        }
     }
 }

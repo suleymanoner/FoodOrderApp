@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { onUpdateLocation, UserState, ApplicationState } from '../redux'
+import { onUpdateLocation, UserState, ApplicationState, onFetchLocation } from '../redux'
 import { Region } from '../redux/models'
 import { showAlert, useNavigation } from '../utils'
 import { ButtonWithIcon, ButtonWithTitle, LocationPick, LocationPickMap } from '../components';
@@ -12,22 +12,40 @@ const screenWidth = Dimensions.get('screen').width
 
 interface LocationScreenProps {
     userReducer: UserState,
-    onUpdateLocation: Function
+    onUpdateLocation: Function,
+    onFetchLocation: Function
 }
 
 
-
-
-const _LocationScreen: React.FC<LocationScreenProps> = ({ userReducer,  onUpdateLocation }) => {
+const _LocationScreen: React.FC<LocationScreenProps> = ({ userReducer,  onUpdateLocation, onFetchLocation }) => {
 
     const { navigate } = useNavigation()
     const [isMap, setIsMap] = useState(false)
+    const { pickedAddress } = userReducer
+    const [currentAddress, setCurrentAddress] = useState("Pick a Location from Map")
+    const [postcode, setPostcode] = useState("")
     const [region, setRegion] = useState<Region>({
         latitude: 38.496769,
         longitude: 27.705259,
         latitudeDelta: 38.496769,
         longitudeDelta: 27.705259
     })
+
+    useEffect(() => {
+
+        if(pickedAddress !== undefined) {
+            const { address_components } = pickedAddress
+            if(Array.isArray(address_components)) {
+                setCurrentAddress(pickedAddress.formatted_address) 
+                address_components.map(item => {
+                    if(item.types.filter(item => item === 'postal_code').length > 0) {
+                        setPostcode(item.short_name)
+                    }
+                })
+            }
+        }
+
+    }, [pickedAddress])
 
     
     const onChangeLocation = (location: Point) => {
@@ -46,11 +64,13 @@ const _LocationScreen: React.FC<LocationScreenProps> = ({ userReducer,  onUpdate
         setRegion(newRegion)
         console.log(newRegion);
 
-        // then get with geolocation and use opencage then show address to user
+        onFetchLocation(newRegion.latitude, newRegion.longitude)
     }
 
     const onTapConfirmLocation = () => {
         console.log("confirmed");
+        onUpdateLocation(currentAddress, postcode)
+        navigate("HomePage")
     }
 
 
@@ -94,7 +114,7 @@ const _LocationScreen: React.FC<LocationScreenProps> = ({ userReducer,  onUpdate
                 </View>
                 <View style={styles.footer} >
                     <View style={styles.confirm_container} >
-                        <Text style={styles.your_address_text} >Your Current Selected Address</Text>
+                        <Text style={styles.your_address_text} >{currentAddress}</Text>
                         <ButtonWithTitle title='Confirm' onTap={onTapConfirmLocation} width={320} height={50} />
                     </View>
                 </View>
@@ -116,7 +136,7 @@ const mapToStateProps = (state: ApplicationState) => ({
     userReducer: state.userReducer
 })
 
-const LocationScreen = connect(mapToStateProps, {onUpdateLocation})(_LocationScreen)
+const LocationScreen = connect(mapToStateProps, { onUpdateLocation, onFetchLocation })(_LocationScreen)
 
 export { LocationScreen }
 

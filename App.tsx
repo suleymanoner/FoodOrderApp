@@ -38,7 +38,8 @@ const switchNavigator = createSwitchNavigator({
         HomePage: HomeScreen,
         SearchPage: SearchScreen,
         RestaurantPage: RestaurantScreen,
-        FoodDetailsPage: FoodDetailsScreen
+        FoodDetailsPage: FoodDetailsScreen,
+        LocationPage: LocationScreen
       }, {
         defaultNavigationOptions: {
           headerShown: false

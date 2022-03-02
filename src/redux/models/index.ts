@@ -46,7 +46,8 @@ export interface UserState {
     error: string | undefined,
     cart: [FoodModel],
     orders: [OrderModel],
-    appliedOffer: OfferModel
+    appliedOffer: OfferModel,
+    pickedAddress: PickedAddress
 }
 
 export interface ShoppingState {
@@ -96,4 +97,20 @@ export interface Region {
     longitude: number,
     latitudeDelta: number,
     longitudeDelta: number
+}
+
+export interface PickedAddress {
+    address_components: [
+        {
+            long_name: string,
+            short_name: string,
+            types: [string]
+        }
+    ],
+    formatted_address: string,
+    place_id: string
+}
+
+export interface PickedLocationResult {
+    results: [PickedAddress]
 }

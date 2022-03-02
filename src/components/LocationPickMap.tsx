@@ -26,9 +26,11 @@ const LocationPickMap: React.FC<LocationPickMapProps> = ({ onMarkerChanged, last
                 initialRegion={lastLocation}
                 onRegionChangeComplete={onRegionChange}
             >
-
             </MapView>
 
+            <View style={styles.icon_container} >
+                <Image source={require("../images/delivery_icon.png")} style={styles.icon} />
+            </View>
 
         </View>
     )
@@ -48,6 +50,17 @@ const styles = StyleSheet.create({
     },
     map_view_container: {
         flex: 1,
+    },
+    icon_container: {
+        left: "50%",
+        top: "50%",
+        position: "absolute",
+        marginLeft: -24,
+        marginTop: -48
+    },
+    icon: {
+        width: 50,
+        height: 50
     }
 })
 

@@ -56,9 +56,33 @@ const _LandingScreen: React.FC<LandingProps> = ({ userReducer,  onUpdateLocation
         }
     }
 
+    const checkExistingLocation = async () => {
+
+        try {
+            
+            const user_location = await AsyncStorage.getItem("user_location")
+            const user_location_postcode = await AsyncStorage.getItem("user_location_postcode")
+
+            if(user_location && user_location_postcode) {
+
+                onUpdateLocation(user_location, user_location_postcode)
+                setTimeout(() => {
+                    navigate('homeStack')
+                }, 500)
+            } else {
+                await getDeviceLocation()
+            }
+
+
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
+
 
     useEffect(() => {
-        getDeviceLocation()
+        checkExistingLocation()
     }, [])
 
 

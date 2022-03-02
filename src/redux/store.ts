@@ -4,7 +4,7 @@ import { rootReducer } from './reducers'
 
 //const store = createStore(rootReducer, applyMiddleware(thunk))
 
-let store
+let store: any
 
 if (process.env.NODE_ENV === 'development') {
     const Reactotron = require('../config/ReactotronConfig').default;

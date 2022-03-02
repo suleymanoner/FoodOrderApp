@@ -22,18 +22,11 @@ const _HomeScreen: React.FC<HomeProps> = (props) => {
     const [address, setAddress] = useState("Address")
     const { navigate } = useNavigation()
 
-    const locationFromStorage = AsyncStorage.getItem("user_location")
-    const postcodeFromStorage = AsyncStorage.getItem("user_location_postcode")
-
     useEffect(() => {
-        props.onAvailability(postCode)
         setAddress(location)
-
-        setTimeout(() => {
-            props.onSearchFoods(postCode)
-        }, 1000);
-
-    }, [])
+        props.onAvailability(postCode)
+        props.onSearchFoods(postCode)
+    }, [location])
 
     const onTapRestaurant = (item: Restaurant) => {
         navigate('RestaurantPage', { restaurant: item })
@@ -43,13 +36,18 @@ const _HomeScreen: React.FC<HomeProps> = (props) => {
         navigate('FoodDetailsPage', { food: item })
     }
 
+    const onTapEditLocation = () => {
+        navigate("LocationPage")
+    }
+
 
     return(
         <View style={styles.container} >
             <View style={styles.navigation} >
                 <View style={styles.navigation_inner_container} >
-                    <Text>{address}</Text>
-                    <Text style={{color: "rgba(246,80,0,255)", fontSize: 20, paddingLeft: 10}} >Edit</Text>
+                    <Image style={{width: 30, height: 30}} source={require("../images/delivery_icon.png")} />
+                    <Text style={styles.address_text} >{address}</Text>
+                    <ButtonWithIcon height={30} width={30} icon={require("../images/edit_icon.png")} onTap={onTapEditLocation} />
                 </View>
                 <View style={styles.search_bar_container} >
                     <SearchBar 
@@ -123,11 +121,11 @@ const styles = StyleSheet.create({
         marginTop: 25,
         flex: 4,
         backgroundColor: "rgba(242,242,242,1)",
-        paddingLeft: 20,
-        paddingRight: 20,
+        paddingLeft: 25,
+        paddingRight: 25,
         justifyContent: "center",
         alignItems: "flex-start",
-        flexDirection: "row"
+        flexDirection: "row",
     },
     search_bar_container: {
         display: "flex",
@@ -147,5 +145,11 @@ const styles = StyleSheet.create({
         fontWeight: "800",
         color: "#f15b5d",
         marginLeft: 20
+    },
+    address_text: {
+        fontSize: 13,
+        color: "black",
+        marginRight: 10,
+        marginLeft: 10
     }
 })
