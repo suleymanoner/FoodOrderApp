@@ -17,6 +17,7 @@ import { OrderDetailScreen } from './src/screens/OrderDetailScreen';
 import { AccountScreen } from './src/screens/AccountScreen';
 import { OfferScreen } from './src/screens/OfferScreen';
 import { LocationScreen } from './src/screens/LocationScreen';
+import { StripeProvider } from '@stripe/stripe-react-native'
 
 
 const switchNavigator = createSwitchNavigator({
@@ -117,7 +118,16 @@ const AppNavigation = createAppContainer(switchNavigator)
 const App = () => {
   return(
     <Provider store={store} >
-      <AppNavigation />
+      <StripeProvider
+        publishableKey='pk_test_51KYz77BTzreFKPBJbc6pDJsTEduWx0DTZPEb7CNZRTMqeVdq4dsKN6f9BDKS1UG8ys2xxFo9xG2yfZRrf9kRweef00UFsKKzwL'
+        merchantIdentifier='com.jgogoi.Online_Food_Order_App'
+        threeDSecureParams={{
+          backgroundColor: "#FFF",
+          timeout: 5          
+        }}
+      >
+        <AppNavigation />
+      </StripeProvider>
     </Provider>
   )
 }

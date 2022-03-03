@@ -66,6 +66,7 @@ const _LandingScreen: React.FC<LandingProps> = ({ userReducer,  onUpdateLocation
             if(user_location && user_location_postcode) {
 
                 onUpdateLocation(user_location, user_location_postcode)
+                
                 setTimeout(() => {
                     navigate('homeStack')
                 }, 500)

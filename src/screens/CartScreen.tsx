@@ -2,7 +2,7 @@ import React, { useState, useEffect, createRef } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { ApplicationState, FoodModel, ShoppingState, onUpdateCart, UserState, onCreateOrder, onApplyOffer } from '../redux';
-import { ButtonWithTitle, FoodCardInfo } from '../components'
+import { ButtonWithTitle, FoodCardInfo, CardPayment } from '../components'
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { checkExistence, useNavigation, showAlert } from '../utils'
 import PaymentTypePopup from 'react-native-raw-bottom-sheet'
@@ -25,6 +25,7 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
     const [payableAmount, setPayableAmount] = useState(0)
     const [discount, setDiscount] = useState(0)
     const popupRef = createRef<PaymentTypePopup>()
+    const [isPayment, setIsPayment] = useState(false)
 
     const onTapFood = (item: FoodModel) => {
         navigate('FoodDetailsPage', { food: item })
@@ -93,6 +94,19 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
         popupRef.current?.close(),
         props.onApplyOffer(appliedOffer, true)
     }
+
+    const onPaymentSuccess = (paymentResponse: string) => {
+
+    }
+
+    const onPaymentFailed = (failedResponse: string) => {
+
+    }
+
+    const onPaymentCancel = () => {
+
+    }
+
 
     const footerContent = () => {
         return(
@@ -181,7 +195,7 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
                             </TouchableOpacity>
 
                             <TouchableOpacity 
-                                onPress={() => {}}
+                                onPress={() => setIsPayment(true)}
                                 style={styles.options} 
                             >
                                 <Image source={require('../images/card_icon.png')} style={styles.icon} />
@@ -199,44 +213,54 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
 
     if(cart.length > 0) {
 
-        return(
-            <View style={styles.container} >
-                <View style={styles.navigation} >
-                    <View style={styles.inside_container}>
-                            <Text style={styles.my_cart_text} >My Cart</Text>
-                        { user.token !== undefined && 
-                            <TouchableOpacity style={{alignItems: "center"}} 
-                            onPress= {() => {
-                                navigate("OrderPage")
-                            }}
-                            >
-                                <Image source={require("../images/orders.png")} style={styles.order_icon} />
-                            </TouchableOpacity> 
-                        }
-                            
+        if(isPayment) {
+
+            return(
+                <CardPayment  />
+            )
+
+
+        } else {
+
+            return(
+                <View style={styles.container} >
+                    <View style={styles.navigation} >
+                        <View style={styles.inside_container}>
+                                <Text style={styles.my_cart_text} >My Cart</Text>
+                            { user.token !== undefined && 
+                                <TouchableOpacity style={{alignItems: "center"}} 
+                                onPress= {() => {
+                                    navigate("OrderPage")
+                                }}
+                                >
+                                    <Image source={require("../images/orders.png")} style={styles.order_icon} />
+                                </TouchableOpacity> 
+                            }
+                                
+                        </View>
                     </View>
-                </View>
-                <View style={styles.body} >
-                    <FlatList 
-                    showsVerticalScrollIndicator={false}
-                    data={cart}
-                    renderItem={({item}) => <FoodCardInfo item={checkExistence(item, cart)} onTap={onTapFood} onUpdateCart={props.onUpdateCart} /> } 
-                    keyExtractor={(item) => `${item._id}`} 
-                    ListFooterComponent={footerContent} />
-                </View>
-
-                <View style={styles.footer}>
-                    <View style={styles.amount_container} >
-                        <Text style={styles.total_text} >Total</Text>
-                        <Text style={styles.total_text} >{payableAmount} ₺</Text>
+                    <View style={styles.body} >
+                        <FlatList 
+                        showsVerticalScrollIndicator={false}
+                        data={cart}
+                        renderItem={({item}) => <FoodCardInfo item={checkExistence(item, cart)} onTap={onTapFood} onUpdateCart={props.onUpdateCart} /> } 
+                        keyExtractor={(item) => `${item._id}`} 
+                        ListFooterComponent={footerContent} />
                     </View>
-                    <ButtonWithTitle title={"Make Payment"} onTap={onValidateOrder} height={50} width={320}/>
+    
+                    <View style={styles.footer}>
+                        <View style={styles.amount_container} >
+                            <Text style={styles.total_text} >Total</Text>
+                            <Text style={styles.total_text} >{payableAmount} ₺</Text>
+                        </View>
+                        <ButtonWithTitle title={"Make Payment"} onTap={onValidateOrder} height={50} width={320}/>
+                    </View>
+    
+                    {popupView()}
+    
                 </View>
-
-                {popupView()}
-
-            </View>
-        )
+            )
+        }
 
     } else {
 

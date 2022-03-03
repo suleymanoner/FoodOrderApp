@@ -11,3 +11,4 @@ export * from './OrderCard';
 export * from './OfferCard';
 export * from './LocationPick';
 export * from './LocationPickMap';
+export * from './CardPayment';
