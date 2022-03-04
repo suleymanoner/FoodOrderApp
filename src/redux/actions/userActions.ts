@@ -236,7 +236,7 @@ export const onOTPRequest = (user: UserModel) => {
 }
 
 
-export const onCreateOrder = (cartItems: [FoodModel], user: UserModel) => {
+export const onCreateOrder = (cartItems: [FoodModel], user: UserModel, paymentResponse: string) => {
 
     let cart = new Array()
 
@@ -252,7 +252,8 @@ export const onCreateOrder = (cartItems: [FoodModel], user: UserModel) => {
             axios.defaults.headers.common['Authorization'] = `Bearer ${user.token}`
 
             const response = await axios.post<OrderModel>(`${BASE_URL}user/create-order` , {
-                cart
+                cart,
+                paymentResponse
             })
 
             if(!response) {

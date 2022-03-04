@@ -6,6 +6,7 @@ import { ButtonWithTitle, FoodCardInfo, CardPayment } from '../components'
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { checkExistence, useNavigation, showAlert } from '../utils'
 import PaymentTypePopup from 'react-native-raw-bottom-sheet'
+import { PaymentIntent } from '@stripe/stripe-react-native'
 
 
 interface CartScreenProps {
@@ -52,7 +53,7 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
         }
 
         setTotalAmount(total)
-        setPayableAmount(total)
+        setPayableAmount((total + tax))
         setDiscount(0)
 
         if(appliedOffer._id !== undefined) {
@@ -76,8 +77,6 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
 
     const onValidateOrder = () => {
 
-        // signup service don't work on backend service. just use login.
-
         if(user !== undefined) {
             if(!user.verified) {
                 navigate('LoginPage')
@@ -89,22 +88,32 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
         }        
     }
 
-    const onTapPlaceOrder = () => {
-        props.onCreateOrder(cart, user)
+    const onTapPlaceOrder = (paymentResponse: string) => {
+        props.onCreateOrder(cart, user, paymentResponse)
         popupRef.current?.close(),
         props.onApplyOffer(appliedOffer, true)
     }
 
-    const onPaymentSuccess = (paymentResponse: string) => {
+    const onPaymentSuccess = (paymentResponse: PaymentIntent) => {
 
+        if(paymentResponse.status === "Succeeded") {
+            const responseString = JSON.stringify(paymentResponse)
+            onTapPlaceOrder(responseString)
+            console.log(responseString);
+        } else {
+            setIsPayment(false)
+            showAlert("Payment Failed!", "Payment is Failed! ")
+        }
     }
 
     const onPaymentFailed = (failedResponse: string) => {
-
+        setIsPayment(false)
+        showAlert("Payment Failed!", "Payment is Failed! " + failedResponse)
     }
 
     const onPaymentCancel = () => {
-
+        setIsPayment(false)
+        showAlert("Payment Cancelled!", "Payment is Failed! Due to cancelled by user!")
     }
 
 
@@ -133,7 +142,7 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
                     </View> 
                     <View style={styles.footer_total_amount} >
                         <Text style={{ flex: 1, color: "black", fontSize: 14}} >Tax & Deliver Charge</Text>
-                        <Text style={{color: "black", fontSize: 16}} >{totalTax.toFixed(0)} ₺</Text>
+                        <Text style={{color: "black", fontSize: 16}} >{totalTax} ₺</Text>
                     </View>
 
                     {appliedOffer._id !== undefined && 
@@ -145,7 +154,7 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
                     
                     <View style={styles.footer_total_amount} >
                         <Text style={{ flex: 1, color: "black", fontSize: 14}} >Net Payable</Text>
-                        <Text style={{color: "black", fontSize: 16}} >{payableAmount.toFixed(0)} ₺</Text>
+                        <Text style={{color: "black", fontSize: 16}} >{payableAmount} ₺</Text>
                     </View>
                 </View>
                 
@@ -187,7 +196,7 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
                     <ScrollView horizontal={true} >
                         <View style={styles.payment_options} >
                             <TouchableOpacity 
-                                onPress={() => onTapPlaceOrder()}
+                                onPress={() => onTapPlaceOrder("COD")}
                                 style={styles.options} 
                             >
                                 <Image source={require('../images/cod_icon.png')} style={styles.icon} />
@@ -203,11 +212,9 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
                             </TouchableOpacity>
                         </View>
                     </ScrollView>
-
                 </View>
             </PaymentTypePopup>
         )
-
     }
 
 
@@ -216,9 +223,13 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
         if(isPayment) {
 
             return(
-                <CardPayment  />
+                <CardPayment 
+                onPaymentSuccess={onPaymentSuccess}
+                onPaymentFailed={onPaymentFailed}
+                onPaymentCancel={onPaymentCancel}
+                amount={payableAmount}
+                />
             )
-
 
         } else {
 
@@ -235,8 +246,7 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
                                 >
                                     <Image source={require("../images/orders.png")} style={styles.order_icon} />
                                 </TouchableOpacity> 
-                            }
-                                
+                            }  
                         </View>
                     </View>
                     <View style={styles.body} >
@@ -281,14 +291,12 @@ const _CartScreen: React.FC<CartScreenProps> = (props) => {
                         
                     </View>
                 </View>
-
                     <View style={styles.body}>
                         <Text style={styles.empty_text} >Your Cart is Empty</Text>
                     </View>
             </View>
         )
     }
-
 }
 
 const styles = StyleSheet.create({

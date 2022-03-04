@@ -53,10 +53,6 @@ const _OrderScreen: React.FC<OrderScreenProps> = (props) => {
                     
                 </View>
 
-                <View style={styles.footer}>
-                    
-                </View>
-
             </View>
         )
     }

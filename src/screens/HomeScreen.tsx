@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { ButtonWithIcon, CategoryCard, RestaurantCard, SearchBar } from '../components';
 import { onAvailability, onSearchFoods, UserState, ApplicationState, ShoppingState, Restaurant, FoodModel } from '../redux'
 import { useNavigation } from '../utils'
-import AsyncStorage from "@react-native-community/async-storage";
+
 
 interface HomeProps {
     userReducer: UserState,
