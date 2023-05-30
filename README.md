@@ -7,8 +7,8 @@ Welcome to FoodOrderApp! This repository contains the source code for a food ord
 - [Features](#features)
 - [Installation](#installation)
 - [Contributing](#contributing)
-- [License](#license)
 - [Credit](#credit)
+
 ## Features
 
 FoodOrderApp comes with the following features:
